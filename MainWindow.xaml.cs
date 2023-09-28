@@ -34,6 +34,7 @@ namespace Battleships_WPF
                     brush.Stretch = Stretch.Fill;
                     MyControl1.Background = brush;
                     MyControl1.Name = "Button" + count.ToString();
+                    MyControl1.Click += new RoutedEventHandler(button_Click);
                     if (j != 9)
                     {
                         Grid.SetColumn(MyControl1, j);
@@ -43,6 +44,13 @@ namespace Battleships_WPF
                     }               
                 }
             }
+        }
+
+        void button_Click(object sender, RoutedEventArgs e)
+        {
+            Button srcButton = e.Source as Button;
+            string buttonpressed = srcButton.Name;
+            ButtonX.Text = buttonpressed;
         }
     }
 }

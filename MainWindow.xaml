@@ -6,48 +6,54 @@
         xmlns:local="clr-namespace:Battleships_WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="1000">
-    <Grid Name= "watertiles" Height="465" Width="855" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="10" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+    <Grid >
+        <Grid Name= "watertiles" Height="465" Width="855" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
 
-        </Grid.RowDefinitions>
-        <Rectangle  Name="button0" Grid.Column= "9" Grid.Row="0" Fill="Black"></Rectangle>
-        <Rectangle  Name="button1" Grid.Column= "9" Grid.Row="1" Fill="Black"></Rectangle>
-        <Rectangle  Name="button2" Grid.Column= "9" Grid.Row="2" Fill="Black"></Rectangle>
-        <Rectangle  Name="button3" Grid.Column= "9" Grid.Row="3" Fill="Black"></Rectangle>
-        <Rectangle  Name="button4" Grid.Column= "9" Grid.Row="4" Fill="Black"></Rectangle>
-        <Rectangle  Name="button5" Grid.Column= "9" Grid.Row="5" Fill="Black"></Rectangle>
-        <Rectangle  Name="button6" Grid.Column= "9" Grid.Row="6" Fill="Black"></Rectangle>
-        <Rectangle  Name="button7" Grid.Column= "9" Grid.Row="7" Fill="Black"></Rectangle>
-        <Rectangle  Name="button8" Grid.Column= "9" Grid.Row="8" Fill="Black"></Rectangle>
+            </Grid.RowDefinitions>
+            <Rectangle  Name="button0" Grid.Column= "9" Grid.Row="0" Fill="Black"></Rectangle>
+            <Rectangle  Name="button1" Grid.Column= "9" Grid.Row="1" Fill="Black"></Rectangle>
+            <Rectangle  Name="button2" Grid.Column= "9" Grid.Row="2" Fill="Black"></Rectangle>
+            <Rectangle  Name="button3" Grid.Column= "9" Grid.Row="3" Fill="Black"></Rectangle>
+            <Rectangle  Name="button4" Grid.Column= "9" Grid.Row="4" Fill="Black"></Rectangle>
+            <Rectangle  Name="button5" Grid.Column= "9" Grid.Row="5" Fill="Black"></Rectangle>
+            <Rectangle  Name="button6" Grid.Column= "9" Grid.Row="6" Fill="Black"></Rectangle>
+            <Rectangle  Name="button7" Grid.Column= "9" Grid.Row="7" Fill="Black"></Rectangle>
+            <Rectangle  Name="button8" Grid.Column= "9" Grid.Row="8" Fill="Black"></Rectangle>
+        </Grid>
+        <Grid Margin="855,10,-148,10" Width="100">
+            <TextBox Name="ButtonX" Text="ButtonPressed" Margin="-90,-10,50,-10">
+            </TextBox>
+        </Grid>
     </Grid>
 </Window>
