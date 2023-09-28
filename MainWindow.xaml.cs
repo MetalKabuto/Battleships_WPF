@@ -23,6 +23,26 @@ namespace Battleships_WPF
         public MainWindow()
         {
             InitializeComponent();
+            int count = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    Button MyControl1 = new Button();
+                    var brush = new ImageBrush();
+                    brush.ImageSource = new BitmapImage(new Uri("C:\\Users\\ddzed\\source\\repos\\Battleships WPF\\Images\\WaterTileResized.png"));
+                    brush.Stretch = Stretch.Fill;
+                    MyControl1.Background = brush;
+                    MyControl1.Name = "Button" + count.ToString();
+                    if (j != 9)
+                    {
+                        Grid.SetColumn(MyControl1, j);
+                        Grid.SetRow(MyControl1, i);
+                        watertiles.Children.Add(MyControl1);
+                        count++;
+                    }               
+                }
+            }
         }
     }
 }

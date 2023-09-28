@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Battleships_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="465" Width="855">
-    <Grid Name= "watertiles">
+        Title="MainWindow" Height="500" Width="1000">
+    <Grid Name= "watertiles" Height="465" Width="855" VerticalAlignment="Bottom" HorizontalAlignment="Left">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
@@ -49,6 +49,5 @@
         <Rectangle  Name="button6" Grid.Column= "9" Grid.Row="6" Fill="Black"></Rectangle>
         <Rectangle  Name="button7" Grid.Column= "9" Grid.Row="7" Fill="Black"></Rectangle>
         <Rectangle  Name="button8" Grid.Column= "9" Grid.Row="8" Fill="Black"></Rectangle>
-        
     </Grid>
 </Window>
