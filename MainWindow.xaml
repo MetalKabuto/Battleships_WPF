@@ -56,6 +56,11 @@
             </TextBox>
             <TextBox Name="MousePositionText" Text="MousePos" Margin="-90,100,50,-10">
             </TextBox>
+            <!-- Knappar och image fältet. Tänker att det ska byta bild när man trycker på 'spin' eller 'next'. -->
+            <Button Content="Spin ->" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-90,0,0,40" Height="35" Width="70" Background="Teal"/>
+            <Button Content="Next" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-20,0,0,40" Height="35" Width="70" Background="Red"/>
+            <Button Content="Start Match" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-70,0,0,0" Height="35" Width="90" Background="Green"/>
+            <Image Margin="-80,184,60,134" Source="C:\Users\Hanne\source\repos\Battleships-WPF\Images\istockphoto-501133891-612x612.jpg" Stretch="Fill"/>
         </Grid>
     </Grid>
 </Window>
