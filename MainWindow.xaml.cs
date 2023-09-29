@@ -20,6 +20,8 @@ namespace Battleships_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static string MouseHover;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -30,11 +32,12 @@ namespace Battleships_WPF
                 {
                     Button MyControl1 = new Button();
                     var brush = new ImageBrush();
-                    brush.ImageSource = new BitmapImage(new Uri("C:\\Users\\ddzed\\source\\repos\\Battleships WPF\\Images\\WaterTileResized.png"));
+                    brush.ImageSource = new BitmapImage(new Uri("C:\\Users\\Josef\\source\\repos\\Battleships-WPF\\Battleships-WPF\\Images\\WaterTileResized.png"));
                     brush.Stretch = Stretch.Fill;
                     MyControl1.Background = brush;
                     MyControl1.Name = "Button" + count.ToString();
                     MyControl1.Click += new RoutedEventHandler(button_Click);
+                    MyControl1.MouseEnter += new MouseEventHandler(button_Enter);
                     if (j != 9)
                     {
                         Grid.SetColumn(MyControl1, j);
@@ -51,6 +54,15 @@ namespace Battleships_WPF
             Button srcButton = e.Source as Button;
             string buttonpressed = srcButton.Name;
             ButtonX.Text = buttonpressed;
+        }
+
+        void button_Enter(object sender, MouseEventArgs e)
+        {
+            Button srcButton = e.Source as Button;
+            string buttonHover = srcButton.Name;
+            MousePositionText.Text = $"MouseOver : {buttonHover}";
+            MouseHover = buttonHover;
+
         }
     }
 }

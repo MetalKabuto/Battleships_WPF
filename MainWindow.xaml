@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Battleships_WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="1000">
-    <Grid >
+    <Grid>
         <Grid Name= "watertiles" Height="465" Width="855" VerticalAlignment="Bottom" HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -53,6 +53,8 @@
         </Grid>
         <Grid Margin="855,10,-148,10" Width="100">
             <TextBox Name="ButtonX" Text="ButtonPressed" Margin="-90,-10,50,-10">
+            </TextBox>
+            <TextBox Name="MousePositionText" Text="MousePos" Margin="-90,100,50,-10">
             </TextBox>
         </Grid>
     </Grid>
