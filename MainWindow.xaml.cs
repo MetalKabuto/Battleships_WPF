@@ -25,8 +25,7 @@ namespace Battleships_WPF
 
         public MainWindow()
         {
-            string workingDirectory = Environment.CurrentDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
             InitializeComponent();
             int count = 0;
             for (int i = 0; i < 10; i++)
