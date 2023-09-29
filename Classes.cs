@@ -97,14 +97,6 @@ namespace Battleships_WPF
             }
         }
 
-        /*public class Attack
-        {
-            public int playerID, targetRow, targetCol;
-            public string ButtonID;
-            public bool attackHit;
-            public 
-        }*/
-
         public bool Attack(Player player,int row,int col)
         {
             foreach(Boat b in player.boats)
@@ -120,8 +112,5 @@ namespace Battleships_WPF
             }
             return false;
         }
-
-
-
     }
 }
