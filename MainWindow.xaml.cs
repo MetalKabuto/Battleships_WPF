@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,15 +25,18 @@ namespace Battleships_WPF
 
         public MainWindow()
         {
+            string workingDirectory = Environment.CurrentDirectory;
+            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
             InitializeComponent();
             int count = 0;
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 20; j++)
                 {
+
                     Button MyControl1 = new Button();
                     var brush = new ImageBrush();
-                    brush.ImageSource = new BitmapImage(new Uri("C:\\Users\\Josef\\source\\repos\\Battleships-WPF\\Battleships-WPF\\Images\\WaterTileResized.png"));
+                    brush.ImageSource = new BitmapImage(new Uri( projectDirectory+"\\Images\\WaterTileResized.png"));
                     brush.Stretch = Stretch.Fill;
                     MyControl1.Background = brush;
                     MyControl1.Name = "Button" + count.ToString();

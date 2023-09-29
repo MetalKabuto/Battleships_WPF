@@ -52,7 +52,7 @@
             <Rectangle  Name="button8" Grid.Column= "9" Grid.Row="8" Fill="Black"></Rectangle>
         </Grid>
         <Grid Margin="855,10,-148,10" Width="100">
-            <TextBox Name="ButtonX" Text="ButtonPressed" Margin="-90,-10,50,-10">
+            <TextBox Name="ButtonX" Text="ButtonPressed" Margin="-90,-10,50,-10" TextWrapping="Wrap">
             </TextBox>
             <TextBox Name="MousePositionText" Text="MousePos" Margin="-90,100,50,-10">
             </TextBox>
