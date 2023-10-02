@@ -30,13 +30,56 @@ namespace Battleships_WPF
         private int currentBoatVisualIndex = 0;
         private string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
 
+        private Classes.Boat currentOptionBoat;
+
         public static string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         public MainWindow()
         {
             InitializeComponent();
             CreateMap();
+            LoadImages();
             CreateBoatImage();           
         }
+
+        void LoadImages()
+        {
+            for(int i = 0; i < boatLibrary.Length; i++)
+            {
+                TransformedBitmap transformBmp = new TransformedBitmap();
+                BitmapImage bmpImage = new BitmapImage();
+
+                bmpImage.BeginInit();
+
+                string boatName = boatLibrary[i];
+
+                bmpImage.UriSource = new Uri(projectDirectory + $"\\Images\\Boats\\{boatName}.png", UriKind.RelativeOrAbsolute);
+
+                bmpImage.EndInit();
+
+                transformBmp.BeginInit();
+
+                transformBmp.Source = bmpImage;
+
+                RotateTransform transform = new RotateTransform(0);
+
+                transformBmp.Transform = transform;
+
+                transformBmp.EndInit();
+
+                Image BodyImage = new Image
+                {
+                    Width = 51,
+                    Height = 153,
+                    Name = boatName,
+                    Source = transformBmp
+                    //new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
+                    //transformBmp
+                };
+                BodyImage.MouseMove += BodyImage_MouseMove;
+                Images.Add(BodyImage);
+            }
+        }
+
         void CreateBoatImage(int rotationValue=0, string boatName="BigBoat")
         {
             TransformedBitmap transformBmp = new TransformedBitmap();
@@ -68,7 +111,8 @@ namespace Battleships_WPF
                 //transformBmp
             };
             BodyImage.MouseMove += BodyImage_MouseMove;
-            Images.Add(BodyImage);
+            //mages.Add(BodyImage);
+            ButtonX.Text = Images.Count.ToString();
             ImageCanvas.Children.Add(BodyImage);
 
             if (rotationValue == 0 || rotationValue == 180)
@@ -147,9 +191,10 @@ namespace Battleships_WPF
 
         private void BodyImage_MouseMove(object sender, MouseEventArgs e)
         {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                DragDrop.DoDragDrop(Images[currentBoatRotation], new DataObject(DataFormats.Serializable, Images[currentBoatRotation]), DragDropEffects.Move);
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Image currentImage = Images[currentBoatVisualIndex];
+                DragDrop.DoDragDrop(currentImage, new DataObject(DataFormats.Serializable, currentImage), DragDropEffects.Move);
             }
         }
         private void ImageDrop(object sender, DragEventArgs e)
