@@ -7,8 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="1100">
     <Grid>
-
-        <Grid Name= "watertiles" DragLeave="Drag_Leave" Height="465" Width="450" VerticalAlignment="Bottom" HorizontalAlignment="Left" Drop="GridDrop" AllowDrop="True">
+        <Canvas Background="Transparent" Name="TitleCanvas" Height="200" Width="200" VerticalAlignment="Top" HorizontalAlignment="Left"></Canvas>
+        <Button Name="TitleButton" Click="TitleButton_Click" Content="Begin Game" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80"/>
+        <Grid Name= "watertiles" DragLeave="Drag_Leave" Height="465" Width="450" VerticalAlignment="Bottom" HorizontalAlignment="Left" Drop="GridDrop" AllowDrop="True" Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -43,7 +44,7 @@
             <Rectangle  Name="wall7" Grid.Column= "9" Grid.Row="7" Fill="Black"></Rectangle>
             <Rectangle  Name="wall8" Grid.Column= "9" Grid.Row="8" Fill="Black"></Rectangle>
         </Grid>
-        <Grid Name="watertiles2" Height="465" Width="440" Margin="450,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+        <Grid Name="watertiles2" Height="465" Width="440" Margin="450,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
@@ -68,7 +69,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
         </Grid>
-        <Grid Margin="855,10,-148,10" Width="100">
+        <!--Var tvungen att lägga till ett namn för att kunna gömma/visa den -->
+        <Grid Name="ButtonGrid" Margin="855,10,-148,10" Width="100" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="238*"/>
                 <RowDefinition Height="227*"/>
@@ -83,7 +85,8 @@
             <Button Content="Start Match" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-90,0,0,0" Height="35" Width="70" Background="Green" Grid.Row="1"/>
             <Button Content="Spin ->" Click="SpinButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-20,0,0,0" Height="35" Width="70" Background="Teal" Grid.Row="1"/>
             <!--Image MouseMove="BoatImage_MouseMove" Name="BoatImage" Margin="-80,184,60,134" Stretch="Fill"/> -->
+            <!--Flyttade canvasen med båtar inuti ButtonGrid för att kunna gömma den på 'huvudmenyn'.  -->
+            <Canvas Background="Transparent" Name="ImageCanvas" Height="302" Width="205" VerticalAlignment="Top" HorizontalAlignment="Right" AllowDrop="True" Drop="ImageDrop" Margin="0,95,0,0" DragLeave="Drag_Leave"></Canvas>
         </Grid>
-        <Canvas Background="Transparent" Name="ImageCanvas" Height="302" Width="205" VerticalAlignment="Top" HorizontalAlignment="Right" AllowDrop="True" Drop="ImageDrop" Margin="0,95,0,0" DragLeave="Drag_Leave"></Canvas>
     </Grid>
 </Window>
