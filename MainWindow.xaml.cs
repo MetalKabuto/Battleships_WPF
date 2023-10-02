@@ -22,6 +22,9 @@ namespace Battleships_WPF
     public partial class MainWindow : Window
     {
         public static string MouseHover;
+
+        private int currentBoatRotation = 0; //FIXME: Ta bort denna och ha rotationsvärdet i båt-klassen istället
+
         public static string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         public MainWindow()
         {
@@ -30,9 +33,8 @@ namespace Battleships_WPF
             CreateMap();
             CreateBoatImage();           
         }
-        void CreateBoatImage()
+        void CreateBoatImage(int rotationValue=0)
         {
-            /*
             TransformedBitmap transformBmp = new TransformedBitmap();
             BitmapImage bmpImage = new BitmapImage();
 
@@ -46,23 +48,43 @@ namespace Battleships_WPF
 
             transformBmp.Source = bmpImage;
 
-            RotateTransform transform = new RotateTransform(90);
+            RotateTransform transform = new RotateTransform(rotationValue);
 
             transformBmp.Transform = transform;
 
-            transformBmp.EndInit();*/
+            transformBmp.EndInit();
 
             Image BodyImage = new Image
             {
                 Width = 51,
                 Height = 153,
                 Name = "BigBoat",
-                Source =  new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
+                Source = transformBmp
+                //new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
                 //transformBmp
             };
+
             BodyImage.MouseMove += BodyImage_MouseMove;
             ImageCanvas.Children.Add(BodyImage);
-            Canvas.SetLeft(BodyImage, 10);
+
+            if (rotationValue == 0 || rotationValue == 180)
+            {
+                BodyImage.Width = 51;
+                BodyImage.Height = 153;
+
+                //FIXME : placeringen av båten, ligger lite off center nu
+                Canvas.SetLeft(BodyImage, 80);
+            }
+            else if (rotationValue == 90 || rotationValue == 270)
+            {
+                BodyImage.Width = 153;
+                BodyImage.Height = 51;
+
+                //FIXME : placeringen av båten, ligger lite off center nu
+                Canvas.SetLeft(BodyImage, 30);
+            }
+
+            //Canvas.SetLeft(BodyImage, 80);
             Canvas.SetTop(BodyImage, 80);
         }
 
@@ -145,6 +167,27 @@ namespace Battleships_WPF
 
         }
 
+        private void SpinButton_MouseDown(object sender, RoutedEventArgs e)
+        {
+            
+            if (ImageCanvas.Children.Count > 0)
+            {
+                ImageCanvas.Children.RemoveAt(0);
+                currentBoatRotation -= 90;
 
+                if (currentBoatRotation < 0)
+                {
+                    currentBoatRotation = 270;
+                }
+
+                if (currentBoatRotation > 360)
+                {
+                    currentBoatRotation = 90;
+                }
+
+                CreateBoatImage(currentBoatRotation);
+            }
+            ButtonX.Text = $"Spin : {currentBoatRotation}";
+        }
     }
 }
