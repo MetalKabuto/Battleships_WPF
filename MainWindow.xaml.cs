@@ -37,7 +37,7 @@ namespace Battleships_WPF
                 Width = 51,
                 Height = 153,
                 Name = "BigBoat",
-                Source = new BitmapImage(new Uri("C:\\Users\\ddzed\\source\\repos\\Battleships WPF\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)),
+                Source = new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)),
             };
             BodyImage.MouseMove += BodyImage_MouseMove;
             ImageCanvas.Children.Add(BodyImage);
