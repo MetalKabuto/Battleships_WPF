@@ -38,9 +38,33 @@ namespace Battleships_WPF
             InitializeComponent();
             CreateMap();
             LoadImages();
-            CreateBoatImage();           
+            CreateBoatImage();
+            CreateTitleImage();
         }
-
+        private void TitleButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Gömmer huvudmenyn när man klickar på 'Begin Game'
+            TitleCanvas.Visibility = Visibility.Collapsed;
+            TitleButton.Visibility = Visibility.Collapsed;
+            watertiles.Visibility = Visibility.Visible;
+            watertiles2.Visibility = Visibility.Visible;
+            ButtonGrid.Visibility = Visibility.Visible;
+        }
+        void CreateTitleImage()
+        {
+            TransformedBitmap transformBmp = new TransformedBitmap();
+            BitmapImage bmpImage = new BitmapImage();
+            bmpImage.BeginInit();
+            bmpImage.UriSource = new Uri(projectDirectory + $"\\Images\\titlescreenpicture.jpeg", UriKind.RelativeOrAbsolute);
+            bmpImage.EndInit();
+            Image BodyImage = new Image
+            {
+                Width = 1100,
+                Height = 500,
+                Source = bmpImage
+            };
+            TitleCanvas.Children.Add(BodyImage);
+        }
         void LoadImages()
         {
             for(int i = 0; i < boatLibrary.Length; i++)
