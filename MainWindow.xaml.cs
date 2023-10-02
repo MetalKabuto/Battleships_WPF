@@ -26,22 +26,24 @@ namespace Battleships_WPF
         private int currentBoatRotation = 0; //FIXME: Ta bort denna och ha rotationsvärdet i båt-klassen istället
         private string currentRotation = "Vertical";
 
+        private int currentBoatVisualIndex = 0;
+        private string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
+
         public static string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         public MainWindow()
         {
-            
             InitializeComponent();
             CreateMap();
             CreateBoatImage();           
         }
-        void CreateBoatImage(int rotationValue=0)
+        void CreateBoatImage(int rotationValue=0, string boatName="BigBoat")
         {
             TransformedBitmap transformBmp = new TransformedBitmap();
             BitmapImage bmpImage = new BitmapImage();
 
             bmpImage.BeginInit();
 
-            bmpImage.UriSource = new Uri(projectDirectory + "\\Images\\BigBoat\\BigBoat.png", UriKind.RelativeOrAbsolute);
+            bmpImage.UriSource = new Uri(projectDirectory + $"\\Images\\Boats\\{boatName}.png", UriKind.RelativeOrAbsolute);
 
             bmpImage.EndInit();
 
@@ -59,7 +61,7 @@ namespace Battleships_WPF
             {
                 Width = 51,
                 Height = 153,
-                Name = "BigBoat",
+                Name = boatName,
                 Source = transformBmp
                 //new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
                 //transformBmp
@@ -103,7 +105,12 @@ namespace Battleships_WPF
                 int r = Grid.GetRow(Pos);
                 Grid.SetColumn(element, c);
                 Grid.SetRow(element, r);
-                
+
+                Image image = (Image)data;
+                if(image != null)
+                {
+                    ButtonX.Text = image.Name;
+                }
 
                 if(currentRotation == "Vertical")
                 {
@@ -205,13 +212,12 @@ namespace Battleships_WPF
 
         }
 
-        private void SpinButton_MouseDown(object sender, RoutedEventArgs e)
+        private void SpinButton_Click(object sender, RoutedEventArgs e)
         {
-            
             if (ImageCanvas.Children.Count > 0)
             {
                 ImageCanvas.Children.RemoveAt(0);
-                currentBoatRotation -= 90;
+                currentBoatRotation += 90;
 
                 if (currentBoatRotation < 0)
                 {
@@ -226,6 +232,64 @@ namespace Battleships_WPF
                 CreateBoatImage(currentBoatRotation);
             }
             ButtonX.Text = $"Spin : {currentBoatRotation}";
+        }
+
+        private void NextButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentBoatVisualIndex++;
+
+            //Checks, so index doesnt go out of bounds
+            if(currentBoatVisualIndex > boatLibrary.Length-1)
+            {
+                currentBoatVisualIndex = 0;
+            }
+
+            if (currentBoatVisualIndex < 0)
+            {
+                currentBoatVisualIndex = boatLibrary.Length-1;
+            }
+
+            //Clean the boat visual on the canvas
+            if (ImageCanvas.Children.Count > 0)
+            {
+                ImageCanvas.Children.RemoveAt(0);
+            }
+
+
+            //Add the new boat visual to the canvas
+            if (ImageCanvas.Children.Count == 0)
+            {
+                CreateBoatImage(boatName: boatLibrary[currentBoatVisualIndex]);
+            }
+        }
+
+        private void PreviousButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentBoatVisualIndex--;
+
+            //Checks, so index doesnt go out of bounds
+            if (currentBoatVisualIndex > boatLibrary.Length - 1)
+            {
+                currentBoatVisualIndex = 0;
+            }
+
+            if (currentBoatVisualIndex < 0)
+            {
+                currentBoatVisualIndex = boatLibrary.Length - 1;
+            }
+
+            //Clean the boat visual on the canvas
+            if (ImageCanvas.Children.Count > 0)
+            {
+                ImageCanvas.Children.RemoveAt(0);
+            }
+
+
+            //Add the new boat visual to the canvas
+            if (ImageCanvas.Children.Count == 0)
+            {
+                CreateBoatImage(boatName: boatLibrary[currentBoatVisualIndex]);
+            }
         }
     }
 }
