@@ -112,9 +112,7 @@ namespace Battleships_WPF
                 else if(currentRotation == "Horizontal")
                 {
                     Grid.SetColumnSpan(element, 3);
-                }
-
-                
+                }               
                 watertiles.Children.Add(element);
             }
         }
