@@ -24,6 +24,7 @@ namespace Battleships_WPF
         public static string MouseHover;
 
         private int currentBoatRotation = 0; //FIXME: Ta bort denna och ha rotationsvärdet i båt-klassen istället
+        private string currentRotation = "Vertical";
 
         public static string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         public MainWindow()
@@ -72,6 +73,8 @@ namespace Battleships_WPF
                 BodyImage.Width = 51;
                 BodyImage.Height = 153;
 
+                currentRotation = "Vertical";
+
                 //FIXME : placeringen av båten, ligger lite off center nu
                 Canvas.SetLeft(BodyImage, 80);
             }
@@ -79,6 +82,8 @@ namespace Battleships_WPF
             {
                 BodyImage.Width = 153;
                 BodyImage.Height = 51;
+
+                currentRotation = "Horizontal";
 
                 //FIXME : placeringen av båten, ligger lite off center nu
                 Canvas.SetLeft(BodyImage, 30);
@@ -98,7 +103,18 @@ namespace Battleships_WPF
                 int r = Grid.GetRow(Pos);
                 Grid.SetColumn(element, c);
                 Grid.SetRow(element, r);
-                Grid.SetRowSpan(element, 3);
+                
+
+                if(currentRotation == "Vertical")
+                {
+                    Grid.SetRowSpan(element, 3);
+                }
+                else if(currentRotation == "Horizontal")
+                {
+                    Grid.SetColumnSpan(element, 3);
+                }
+
+                
                 watertiles.Children.Add(element);
             }
         }
