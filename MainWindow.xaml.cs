@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -100,7 +101,6 @@ namespace Battleships_WPF
                     //transformBmp
                 };
                 BodyImage.MouseMove += BodyImage_MouseMove;
-                Images.Add(BodyImage);
             }
         }
 
@@ -136,8 +136,6 @@ namespace Battleships_WPF
             };
             BodyImage.MouseMove += BodyImage_MouseMove;
             //mages.Add(BodyImage);
-            ButtonX.Text = Images.Count.ToString();
-            ImageCanvas.Children.Add(BodyImage);
 
             if (rotationValue == 0 || rotationValue == 180)
             {
@@ -162,6 +160,20 @@ namespace Battleships_WPF
 
             //Canvas.SetLeft(BodyImage, 80);
             Canvas.SetTop(BodyImage, 80);
+            int index = -1;
+            for(int i = 0; i < Images.Count; i++)
+            {
+                if (Images[i].Name == boatName)
+                {
+                    index = i;
+                }
+            }
+            if (index != -1)
+            {
+                Images[index] = BodyImage;
+            }
+            else { Images.Add(BodyImage); }
+            ImageCanvas.Children.Add(BodyImage);
         }
 
         private void GridDrop(object sender, DragEventArgs e)
@@ -180,14 +192,15 @@ namespace Battleships_WPF
                 {
                     ButtonX.Text = image.Name;
                 }
-
                 if(currentRotation == "Vertical")
                 {
                     Grid.SetRowSpan(element, 3);
+                    Grid.SetColumnSpan(element, 1);
                 }
                 else if(currentRotation == "Horizontal")
                 {
                     Grid.SetColumnSpan(element, 3);
+                    Grid.SetRowSpan(element, 1);
                 }               
                 watertiles.Children.Add(element);
             }
