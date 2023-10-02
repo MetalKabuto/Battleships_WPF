@@ -32,16 +32,37 @@ namespace Battleships_WPF
         }
         void CreateBoatImage()
         {
+            /*
+            TransformedBitmap transformBmp = new TransformedBitmap();
+            BitmapImage bmpImage = new BitmapImage();
+
+            bmpImage.BeginInit();
+
+            bmpImage.UriSource = new Uri(projectDirectory + "\\Images\\BigBoat\\BigBoat.png", UriKind.RelativeOrAbsolute);
+
+            bmpImage.EndInit();
+
+            transformBmp.BeginInit();
+
+            transformBmp.Source = bmpImage;
+
+            RotateTransform transform = new RotateTransform(90);
+
+            transformBmp.Transform = transform;
+
+            transformBmp.EndInit();*/
+
             Image BodyImage = new Image
             {
                 Width = 51,
                 Height = 153,
                 Name = "BigBoat",
-                Source = new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)),
+                Source =  new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
+                //transformBmp
             };
             BodyImage.MouseMove += BodyImage_MouseMove;
             ImageCanvas.Children.Add(BodyImage);
-            Canvas.SetLeft(BodyImage, 90);
+            Canvas.SetLeft(BodyImage, 10);
             Canvas.SetTop(BodyImage, 80);
         }
 
