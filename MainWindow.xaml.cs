@@ -66,11 +66,37 @@ namespace Battleships_WPF
             Canvas.SetTop(BodyImage, 80);
         }
 
+        private void GridDrop(object sender, DragEventArgs e)
+        {
+            object data = e.Data.GetData(DataFormats.Serializable);
+            if(data is UIElement element)
+            {
+                Point dropposition = e.GetPosition(watertiles);
+                var Pos = (UIElement)e.Source;
+                int c = Grid.GetColumn(Pos);
+                int r = Grid.GetRow(Pos);
+                Grid.SetColumn(element, c);
+                Grid.SetRow(element, r);
+                Grid.SetRowSpan(element, 3);
+                watertiles.Children.Add(element);
+                ButtonX.Text ="" + dropposition.X;
+            }
+        }
+        private void Drag_Leave(object sender, DragEventArgs e)
+        {
+            object data = e.Data.GetData(DataFormats.Serializable);
+            if (data is UIElement element)
+            {
+                ImageCanvas.Children.Remove(element);
+            }
+
+        }
+
         private void BodyImage_MouseMove(object sender, MouseEventArgs e)
         {
             if(e.LeftButton == MouseButtonState.Pressed)
             {
-                DragDrop.DoDragDrop(ImageCanvas.Children[0], ImageCanvas.Children[0], DragDropEffects.Move);
+                DragDrop.DoDragDrop(ImageCanvas.Children[0], new DataObject(DataFormats.Serializable,ImageCanvas.Children[0]), DragDropEffects.Move);
             }
         }
         private void ImageDrop(object sender, DragEventArgs e)
