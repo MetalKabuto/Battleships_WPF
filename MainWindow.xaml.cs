@@ -149,7 +149,7 @@ namespace Battleships_WPF
         {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
-                DragDrop.DoDragDrop(Images[0], new DataObject(DataFormats.Serializable, Images[0]), DragDropEffects.Move);
+                DragDrop.DoDragDrop(Images[currentBoatRotation], new DataObject(DataFormats.Serializable, Images[currentBoatRotation]), DragDropEffects.Move);
             }
         }
         private void ImageDrop(object sender, DragEventArgs e)
