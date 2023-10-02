@@ -8,7 +8,7 @@
         Title="MainWindow" Height="500" Width="1100">
     <Grid>
 
-        <Grid Name= "watertiles" Height="465" Width="450" VerticalAlignment="Bottom" HorizontalAlignment="Left" Drop="GridDrop" AllowDrop="True">
+        <Grid Name= "watertiles" DragLeave="Drag_Leave" Height="465" Width="450" VerticalAlignment="Bottom" HorizontalAlignment="Left" Drop="GridDrop" AllowDrop="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />

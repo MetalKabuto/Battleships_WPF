@@ -22,6 +22,7 @@ namespace Battleships_WPF
     public partial class MainWindow : Window
     {
         public static string MouseHover;
+        public static List<Image> Images = new List<Image>();
 
         private int currentBoatRotation = 0; //FIXME: Ta bort denna och ha rotationsvärdet i båt-klassen istället
         private string currentRotation = "Vertical";
@@ -64,8 +65,8 @@ namespace Battleships_WPF
                 //new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
                 //transformBmp
             };
-
             BodyImage.MouseMove += BodyImage_MouseMove;
+            Images.Add(BodyImage);
             ImageCanvas.Children.Add(BodyImage);
 
             if (rotationValue == 0 || rotationValue == 180)
@@ -118,19 +119,30 @@ namespace Battleships_WPF
         }
         private void Drag_Leave(object sender, DragEventArgs e)
         {
-            object data = e.Data.GetData(DataFormats.Serializable);
-            if (data is UIElement element)
+            if (e.OriginalSource == ImageCanvas)
             {
-                ImageCanvas.Children.Remove(element);
+                object data = e.Data.GetData(DataFormats.Serializable);
+                if (data is UIElement element)
+                {
+                    ImageCanvas.Children.Remove(element);
+                }
+            }
+            else
+            {
+                object data = e.Data.GetData(DataFormats.Serializable);
+                if (data is UIElement element)
+                {
+                    watertiles.Children.Remove(element);
+                }
             }
 
         }
 
         private void BodyImage_MouseMove(object sender, MouseEventArgs e)
         {
-            if(e.LeftButton == MouseButtonState.Pressed)
-            {
-                DragDrop.DoDragDrop(ImageCanvas.Children[0], new DataObject(DataFormats.Serializable,ImageCanvas.Children[0]), DragDropEffects.Move);
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                DragDrop.DoDragDrop(Images[0], new DataObject(DataFormats.Serializable, Images[0]), DragDropEffects.Move);
             }
         }
         private void ImageDrop(object sender, DragEventArgs e)
