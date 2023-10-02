@@ -93,7 +93,6 @@ namespace Battleships_WPF
             object data = e.Data.GetData(DataFormats.Serializable);
             if(data is UIElement element)
             {
-                Point dropposition = e.GetPosition(watertiles);
                 var Pos = (UIElement)e.Source;
                 int c = Grid.GetColumn(Pos);
                 int r = Grid.GetRow(Pos);
@@ -101,7 +100,6 @@ namespace Battleships_WPF
                 Grid.SetRow(element, r);
                 Grid.SetRowSpan(element, 3);
                 watertiles.Children.Add(element);
-                ButtonX.Text ="" + dropposition.X;
             }
         }
         private void Drag_Leave(object sender, DragEventArgs e)
