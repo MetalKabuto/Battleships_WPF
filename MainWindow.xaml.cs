@@ -241,7 +241,7 @@ namespace Battleships_WPF
                     currentBoatRotation = 90;
                 }
 
-                CreateBoatImage(currentBoatRotation);
+                CreateBoatImage(currentBoatRotation, boatLibrary[currentBoatVisualIndex]);
             }
             ButtonX.Text = $"Spin : {currentBoatRotation}";
         }
