@@ -133,9 +133,14 @@ namespace Battleships_WPF
         {
             public string boatName; //FIXME: replace property
             public int boatID;
+            public string boatPath;
+
             int size, damagedParts;
             public bool destroyed;
             public List<BoatParts> parts;
+
+            public int row_number = -1;
+            public int column_number = -1;
 
             public int BoatSize
             {
@@ -154,6 +159,18 @@ namespace Battleships_WPF
                 this.destroyed = false;
                 this.boatName = boatName;
             }
+            public Boat(BoatTemplate template)
+            {
+                parts = new List<BoatParts>();
+
+                this.damagedParts = 0;
+                this.destroyed = false;
+
+                this.boatName = template.boatName;
+                this.size = template.boatSize;
+                this.boatPath = template.boatPath;
+            }
+
             public void checkDamage()
             {
                 int damage = 0;
@@ -166,7 +183,16 @@ namespace Battleships_WPF
                 }
                 damagedParts = damage;
             } 
-            
+
+            public void SetRow(int newRowValue)
+            {
+                row_number = newRowValue;
+            }
+            public void SetColumn(int newColumnValue)
+            {
+                column_number = newColumnValue;
+            }
+
         }
 
         public class BoatParts
@@ -179,6 +205,14 @@ namespace Battleships_WPF
                 this.rowPos = rowPos;
                 this.damaged = false;
             }
+        }
+
+        public class BoatTemplate
+        {
+            public string boatName;
+            public string boatPath;
+            public int boatSize;
+            public Image boatImage;
         }
 
         public class PreviewWindow
@@ -277,26 +311,10 @@ namespace Battleships_WPF
                 else { MainWindow.Images.Add(BodyImage); }
 
                 canvas.Children.Add(BodyImage);
-                int boatSize = 3;
 
-                Boat newBoat = new Boat(boatName, boatSize);
+                Boat newBoat = new Boat(MainWindow.Instance.GetBoatTemplate(boatName));
 
                 //FIXME: Depending on the name, get the id from a boat library
-                if (boatName == "BigBoat")
-                {
-                    newBoat.BoatSize = 3;
-                    newBoat.boatID = 0;
-                }
-                else if (boatName == "MediumBoat")
-                {
-                    newBoat.BoatSize = 2;
-                    newBoat.boatID = 1;
-                }
-                else if (boatName == "LittleBoat")
-                {
-                    newBoat.BoatSize = 1;
-                    newBoat.boatID = 2;
-                }
 
                 newBoat.currentRotationAngle = rotationValue;
 

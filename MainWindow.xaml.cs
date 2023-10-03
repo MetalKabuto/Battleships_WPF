@@ -28,6 +28,7 @@ namespace Battleships_WPF
 
         public static List<Image> Images = new List<Image>();
         public static string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
+        public static List<Classes.BoatTemplate> boatTemplates = new List<Classes.BoatTemplate>();
 
         //Preview Window variables
         public Classes.PreviewWindow previewWindow = new Classes.PreviewWindow();
@@ -40,6 +41,8 @@ namespace Battleships_WPF
             InitializeComponent();
 
             Instance = this;
+            PopulateBoatTemplates();
+
             currentPreviewBoat = new Classes.Boat("BigBoat", 3);
 
             LoadImages();   //Fill Images list with images, of the elements in Boat Library
@@ -62,6 +65,10 @@ namespace Battleships_WPF
         void LoadImages()
         {
             //FIXME: Move to library class when we have one...
+
+            
+            Classes.Boat boat = new Classes.Boat(GetBoatTemplate(currentPreviewBoat.boatName));
+            
 
             for(int i = 0; i < boatLibrary.Length; i++)
             {
@@ -97,6 +104,77 @@ namespace Battleships_WPF
                 };
                 BodyImage.MouseMove += BodyImage_MouseMove;
             }
+        }
+
+        void PopulateBoatTemplates()
+        {
+            for (int i = 0; i < boatLibrary.Length; i++)
+            {
+                Classes.BoatTemplate boatTemplate = new Classes.BoatTemplate() { boatName = boatLibrary[i] };
+
+                if(boatTemplate.boatName == "BigBoat")
+                {
+                    boatTemplate.boatSize = 3;
+                }
+                else if (boatTemplate.boatName == "MediumBoat")
+                {
+                    boatTemplate.boatSize = 2;
+                }
+                else if (boatTemplate.boatName == "LittleBoat")
+                {
+                    boatTemplate.boatSize = 1;
+                }
+
+                TransformedBitmap transformBmp = new TransformedBitmap();
+                BitmapImage bmpImage = new BitmapImage();
+
+                bmpImage.BeginInit();
+
+                string boatName = boatLibrary[i];
+
+                bmpImage.UriSource = new Uri(projectDirectory + $"\\Images\\Boats\\{boatName}.png", UriKind.RelativeOrAbsolute);
+
+                bmpImage.EndInit();
+
+                transformBmp.BeginInit();
+
+                transformBmp.Source = bmpImage;
+
+                RotateTransform transform = new RotateTransform(0);
+
+                transformBmp.Transform = transform;
+
+                transformBmp.EndInit();
+
+                Image BodyImage = new Image
+                {
+                    Width = 51,
+                    Height = 153,
+                    Name = boatName,
+                    Source = transformBmp
+                    //new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
+                    //transformBmp
+                };
+
+                boatTemplate.boatImage = BodyImage;
+
+                boatTemplates.Add(boatTemplate);
+            }
+        }
+
+        public Classes.BoatTemplate GetBoatTemplate(string boatName)
+        {
+            Classes.BoatTemplate boatTemplate = new Classes.BoatTemplate();
+
+            foreach (var template in boatTemplates)
+            {
+                if(template.boatName == boatName)
+                {
+                    boatTemplate = template;
+                }
+            }
+
+            return boatTemplate;
         }
 
         public void CreateBoatImage(int rotationValue=0, string boatName="BigBoat")
