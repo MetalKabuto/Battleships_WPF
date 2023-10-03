@@ -187,66 +187,63 @@ namespace Battleships_WPF
                 int r = Grid.GetRow(Pos);
                 Grid.SetColumn(element, c);
                 Grid.SetRow(element, r);
+
+                Image image = (Image)data;
+                if (image != null)
+                {
+                    ButtonX.Text = image.Name;
+                }
+
+                int boatSize = 3;   //FIXME: Städa upp koden, och dra storleken från en båtklass istället.
+                if (currentBoatVisualIndex == 0)
+                {
+                    boatSize = 3;
+                }
+                else if (currentBoatVisualIndex == 1)
+                {
+                    boatSize = 2;
+                }
+                else if (currentBoatVisualIndex == 2)
+                {
+                    boatSize = 1;
+                }
+
                 if (currentOrientation == "Vertical")
                 {
-                    Grid.SetRowSpan(element, 3);
-
-                    Image image = (Image)data;
-                    if (image != null)
+                    Image boatImage = data as Image;
+                    if (boatImage != null)
                     {
-                        ButtonX.Text = image.Name;
+                        boatImage.Height /= 3;
+                        boatImage.Height *= boatSize;
                     }
-
-                    int boatSize = 3;   //FIXME: Städa upp koden, och dra storleken från en båtklass istället.
-                    if (currentBoatVisualIndex == 0)
-                    {
-                        boatSize = 3;
-                    }
-                    else if (currentBoatVisualIndex == 1)
-                    {
-                        boatSize = 2;
-                    }
-                    else if (currentBoatVisualIndex == 2)
-                    {
-                        boatSize = 1;
-                    }
-
-                    if (currentOrientation == "Vertical")
-                    {
-                        Image boatImage = data as Image;
-                        if (boatImage != null)
-                        {
-                            boatImage.Height /= 3;
-                            boatImage.Height *= boatSize;
-                        }
-                        Grid.SetRowSpan(element, boatSize);
-                        Grid.SetColumnSpan(element, 1);
-                    }
-                    else if (currentOrientation == "Horizontal")
-                    {
-                        Image boatImage = data as Image;
-                        if (boatImage != null)
-                        {
-                            boatImage.Width /= 3;
-                            boatImage.Width *= boatSize;
-                        }
-                        Grid.SetColumnSpan(element, boatSize);
-                        Grid.SetRowSpan(element, 1);
-                    }
-                    UIElement checker = null;
-                    foreach (UIElement el in watertiles.Children)
-                    {
-                        if (el.Uid == element.Uid)
-                        {
-                            checker = el;
-                        }
-                    }
-                    if (checker != null)
-                    {
-                        watertiles.Children.Remove(checker);
-                    }
-                    watertiles.Children.Add(element);
+                    Grid.SetRowSpan(element, boatSize);
+                    Grid.SetColumnSpan(element, 1);
                 }
+                else if (currentOrientation == "Horizontal")
+                {
+                    Image boatImage = data as Image;
+                    if (boatImage != null)
+                    {
+                        boatImage.Width /= 3;
+                        boatImage.Width *= boatSize;
+                    }
+                    Grid.SetColumnSpan(element, boatSize);
+                    Grid.SetRowSpan(element, 1);
+                }
+                UIElement checker = null;
+                foreach (UIElement el in watertiles.Children)
+                {
+                    if (el.Uid == element.Uid)
+                    {
+                        checker = el;
+                    }
+                }
+                if (checker != null)
+                {
+                    watertiles.Children.Remove(checker);
+                }
+                watertiles.Children.Add(element);
+
             }
         }
         private void Drag_Leave(object sender, DragEventArgs e)
