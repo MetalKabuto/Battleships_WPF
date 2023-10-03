@@ -22,25 +22,33 @@ namespace Battleships_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static MainWindow Instance { get; private set; }
+
         public static string MouseHover;
+
         public static List<Image> Images = new List<Image>();
+        public static string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
 
-        private int currentBoatRotationAngle = 0; //FIXME: Ta bort denna och ha rotationsvärdet i båt-klassen istället
-        private string currentOrientation = "Vertical";
-
-        private int currentBoatVisualIndex = 0;
-        private string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
-
-        private Classes.Boat currentVisualBoat;
+        //Preview Window variables
+        public Classes.PreviewWindow previewWindow = new Classes.PreviewWindow();
+        public Classes.Boat currentPreviewBoat;
+        public Classes.Match currentMatch;
 
         public static string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         public MainWindow()
         {
             InitializeComponent();
-            CreateMap();
-            LoadImages();
-            CreateBoatImage();
-            CreateTitleImage();
+
+            Instance = this;
+            currentPreviewBoat = new Classes.Boat("BigBoat", 3);
+
+            LoadImages();   //Fill Images list with images, of the elements in Boat Library
+
+            currentMatch = new Classes.Match(-1, -1, -1, -1);
+            currentMatch.CreateMap(watertiles, watertiles2);
+               
+            previewWindow.CreateBoatImage(ImageCanvas);
+            currentMatch.CreateTitleImage(TitleCanvas);
         }
         private void TitleButton_Click(object sender, RoutedEventArgs e)
         {
@@ -51,23 +59,10 @@ namespace Battleships_WPF
             watertiles2.Visibility = Visibility.Visible;
             ButtonGrid.Visibility = Visibility.Visible;
         }
-        void CreateTitleImage()
-        {
-            TransformedBitmap transformBmp = new TransformedBitmap();
-            BitmapImage bmpImage = new BitmapImage();
-            bmpImage.BeginInit();
-            bmpImage.UriSource = new Uri(projectDirectory + $"\\Images\\titlescreenpicture.jpeg", UriKind.RelativeOrAbsolute);
-            bmpImage.EndInit();
-            Image BodyImage = new Image
-            {
-                Width = 1100,
-                Height = 500,
-                Source = bmpImage
-            };
-            TitleCanvas.Children.Add(BodyImage);
-        }
         void LoadImages()
         {
+            //FIXME: Move to library class when we have one...
+
             for(int i = 0; i < boatLibrary.Length; i++)
             {
                 TransformedBitmap transformBmp = new TransformedBitmap();
@@ -104,76 +99,9 @@ namespace Battleships_WPF
             }
         }
 
-        void CreateBoatImage(int rotationValue=0, string boatName="BigBoat")
+        public void CreateBoatImage(int rotationValue=0, string boatName="BigBoat")
         {
-            TransformedBitmap transformBmp = new TransformedBitmap();
-            BitmapImage bmpImage = new BitmapImage();
-
-            bmpImage.BeginInit();
-
-            bmpImage.UriSource = new Uri(projectDirectory + $"\\Images\\Boats\\{boatName}.png", UriKind.RelativeOrAbsolute);
-
-            bmpImage.EndInit();
-
-            transformBmp.BeginInit();
-
-            transformBmp.Source = bmpImage;
-
-            RotateTransform transform = new RotateTransform(rotationValue);
-
-            transformBmp.Transform = transform;
-
-            transformBmp.EndInit();
-
-            Image BodyImage = new Image
-            {
-                Width = 51,
-                Height = 153,
-                Name = boatName,
-                Source = transformBmp
-                //new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
-                //transformBmp
-            };
-            BodyImage.MouseMove += BodyImage_MouseMove;
-            //mages.Add(BodyImage);
-
-            if (rotationValue == 0 || rotationValue == 180)
-            {
-                BodyImage.Width = 51;
-                BodyImage.Height = 153;
-
-                currentOrientation = "Vertical";
-
-                //FIXME : placeringen av båten, ligger lite off center nu
-                Canvas.SetLeft(BodyImage, 80);
-            }
-            else if (rotationValue == 90 || rotationValue == 270)
-            {
-                BodyImage.Width = 153;
-                BodyImage.Height = 51;
-
-                currentOrientation = "Horizontal";
-
-                //FIXME : placeringen av båten, ligger lite off center nu
-                Canvas.SetLeft(BodyImage, 30);
-            }
-
-            //Canvas.SetLeft(BodyImage, 80);
-            Canvas.SetTop(BodyImage, 80);
-            int index = -1;
-            for(int i = 0; i < Images.Count; i++)
-            {
-                if (Images[i].Name == boatName)
-                {
-                    index = i;
-                }
-            }
-            if (index != -1)
-            {
-                Images[index] = BodyImage;
-            }
-            else { Images.Add(BodyImage);}
-            ImageCanvas.Children.Add(BodyImage);
+            previewWindow.CreateBoatImage(ImageCanvas, rotationValue, boatName);
         }
 
         private void GridDrop(object sender, DragEventArgs e)
@@ -181,7 +109,7 @@ namespace Battleships_WPF
             object data = e.Data.GetData(DataFormats.Serializable);
             if (data is UIElement element)
             {
-                element.Uid = Images[currentBoatVisualIndex].Name;
+                element.Uid = Images[Classes.PreviewWindow.currentBoatVisualIndex].Name;
                 var Pos = (UIElement)e.Source;
                 int c = Grid.GetColumn(Pos);
                 int r = Grid.GetRow(Pos);
@@ -194,21 +122,9 @@ namespace Battleships_WPF
                     ButtonX.Text = image.Name;
                 }
 
-                int boatSize = 3;   //FIXME: Städa upp koden, och dra storleken från en båtklass istället.
-                if (currentBoatVisualIndex == 0)
-                {
-                    boatSize = 3;
-                }
-                else if (currentBoatVisualIndex == 1)
-                {
-                    boatSize = 2;
-                }
-                else if (currentBoatVisualIndex == 2)
-                {
-                    boatSize = 1;
-                }
+                int boatSize = currentPreviewBoat.BoatSize;
 
-                if (currentOrientation == "Vertical")
+                if (currentPreviewBoat.currentOrientation == "Vertical")
                 {
                     Image boatImage = data as Image;
                     if (boatImage != null)
@@ -219,7 +135,7 @@ namespace Battleships_WPF
                     Grid.SetRowSpan(element, boatSize);
                     Grid.SetColumnSpan(element, 1);
                 }
-                else if (currentOrientation == "Horizontal")
+                else if (currentPreviewBoat.currentOrientation == "Horizontal")
                 {
                     Image boatImage = data as Image;
                     if (boatImage != null)
@@ -267,11 +183,11 @@ namespace Battleships_WPF
 
         }
 
-        private void BodyImage_MouseMove(object sender, MouseEventArgs e)
+        public static void BodyImage_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                Image currentImage = Images[currentBoatVisualIndex];
+                Image currentImage = Images[Classes.PreviewWindow.currentBoatVisualIndex];
                 DragDrop.DoDragDrop(currentImage, new DataObject(DataFormats.Serializable, currentImage), DragDropEffects.Move);
             }
         }
@@ -282,63 +198,14 @@ namespace Battleships_WPF
             Canvas.SetTop(ImageCanvas.Children[0], dropposition.Y-50);
         }
 
-        void CreateMap()
-        {
-            int count = 0;
-            int count2 = 0;
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-
-                    Button MyControl1 = new Button();
-                    var brush = new ImageBrush();
-                    brush.ImageSource = new BitmapImage(new Uri(projectDirectory + "\\Images\\WaterTileResized.png"));
-                    brush.Stretch = Stretch.Fill;
-                    MyControl1.Background = brush;
-                    MyControl1.Name = "Player" + count.ToString();
-                    MyControl1.Click += new RoutedEventHandler(button_Click);
-                    MyControl1.MouseEnter += new MouseEventHandler(button_Enter);
-                    if (j != 9)
-                    {
-                        Grid.SetColumn(MyControl1, j);
-                        Grid.SetRow(MyControl1, i);
-                        watertiles.Children.Add(MyControl1);
-                        count++;
-                    }
-                }
-                for (int j = 0; j < 10; j++)
-                {
-
-                    Button MyControl1 = new Button();
-                    var brush = new ImageBrush();
-                    brush.ImageSource = new BitmapImage(new Uri(projectDirectory + "\\Images\\WaterTileResized.png"));
-                    brush.Stretch = Stretch.Fill;
-                    MyControl1.Background = brush;
-                    MyControl1.Name = "Enemy" + count2.ToString();
-                    MyControl1.Click += new RoutedEventHandler(button_Click);
-                    MyControl1.MouseEnter += new MouseEventHandler(button_Enter);
-                    if (j != 9)
-                    {
-                        Grid.SetColumn(MyControl1, j);
-                        Grid.SetRow(MyControl1, i);
-                        watertiles2.Children.Add(MyControl1);
-                        count2++;
-                    }
-                }
-
-
-            }
-        }
-
-        void button_Click(object sender, RoutedEventArgs e)
+        public void button_Click(object sender, RoutedEventArgs e)
         {
             Button srcButton = e.Source as Button;
             string buttonpressed = srcButton.Name;
             ButtonX.Text = buttonpressed;
         }
 
-        void button_Enter(object sender, MouseEventArgs e)
+        public void button_Enter(object sender, MouseEventArgs e)
         {
             Button srcButton = e.Source as Button;
             string buttonHover = srcButton.Name;
@@ -349,82 +216,17 @@ namespace Battleships_WPF
 
         private void SpinButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ImageCanvas.Children.Count > 0)
-            {
-                ImageCanvas.Children.RemoveAt(0);
-                currentBoatRotationAngle += 90;
-
-                if (currentBoatRotationAngle < 0)
-                {
-                    currentBoatRotationAngle = 270;
-                }
-
-                if (currentBoatRotationAngle > 360)
-                {
-                    currentBoatRotationAngle = 90;
-                }
-
-                CreateBoatImage(currentBoatRotationAngle, boatLibrary[currentBoatVisualIndex]);
-            }
-            ButtonX.Text = $"Spin : {currentBoatRotationAngle}";
+            previewWindow.SpinBoat(ImageCanvas, currentPreviewBoat);
         }
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            currentBoatVisualIndex++;
-
-            //Checks, so index doesnt go out of bounds
-            if(currentBoatVisualIndex > boatLibrary.Length-1)
-            {
-                currentBoatVisualIndex = 0;
-            }
-
-            if (currentBoatVisualIndex < 0)
-            {
-                currentBoatVisualIndex = boatLibrary.Length-1;
-            }
-
-            //Clean the boat visual on the canvas
-            if (ImageCanvas.Children.Count > 0)
-            {
-                ImageCanvas.Children.RemoveAt(0);
-            }
-
-
-            //Add the new boat visual to the canvas
-            if (ImageCanvas.Children.Count == 0)
-            {
-                CreateBoatImage(boatName: boatLibrary[currentBoatVisualIndex]);
-            }
+            previewWindow.NextButton_Click(ImageCanvas);
         }
 
         private void PreviousButton_Click(object sender, RoutedEventArgs e)
         {
-            currentBoatVisualIndex--;
-
-            //Checks, so index doesnt go out of bounds
-            if (currentBoatVisualIndex > boatLibrary.Length - 1)
-            {
-                currentBoatVisualIndex = 0;
-            }
-
-            if (currentBoatVisualIndex < 0)
-            {
-                currentBoatVisualIndex = boatLibrary.Length - 1;
-            }
-
-            //Clean the boat visual on the canvas
-            if (ImageCanvas.Children.Count > 0)
-            {
-                ImageCanvas.Children.RemoveAt(0);
-            }
-
-
-            //Add the new boat visual to the canvas
-            if (ImageCanvas.Children.Count == 0)
-            {
-                CreateBoatImage(boatName: boatLibrary[currentBoatVisualIndex]);
-            }
+            previewWindow.PreviousButton_Click(ImageCanvas);
         }
     }
 }
