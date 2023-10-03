@@ -172,7 +172,7 @@ namespace Battleships_WPF
             {
                 Images[index] = BodyImage;
             }
-            else { Images.Add(BodyImage); }
+            else { Images.Add(BodyImage);}
             ImageCanvas.Children.Add(BodyImage);
         }
 
@@ -181,17 +181,12 @@ namespace Battleships_WPF
             object data = e.Data.GetData(DataFormats.Serializable);
             if(data is UIElement element)
             {
+                element.Uid = Images[currentBoatVisualIndex].Name;
                 var Pos = (UIElement)e.Source;
                 int c = Grid.GetColumn(Pos);
                 int r = Grid.GetRow(Pos);
                 Grid.SetColumn(element, c);
                 Grid.SetRow(element, r);
-
-                Image image = (Image)data;
-                if(image != null)
-                {
-                    ButtonX.Text = image.Name;
-                }
                 if(currentRotation == "Vertical")
                 {
                     Grid.SetRowSpan(element, 3);
@@ -201,7 +196,18 @@ namespace Battleships_WPF
                 {
                     Grid.SetColumnSpan(element, 3);
                     Grid.SetRowSpan(element, 1);
-                }               
+                }
+                UIElement checker = null;
+                foreach(UIElement el in watertiles.Children)
+                {
+                    if(el.Uid == element.Uid) 
+                    {
+                        checker = el;
+                    }
+                }if(checker != null)
+                {
+                    watertiles.Children.Remove(checker);
+                }
                 watertiles.Children.Add(element);
             }
         }
