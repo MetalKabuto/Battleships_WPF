@@ -25,13 +25,13 @@ namespace Battleships_WPF
         public static string MouseHover;
         public static List<Image> Images = new List<Image>();
 
-        private int currentBoatRotation = 0; //FIXME: Ta bort denna och ha rotationsvärdet i båt-klassen istället
-        private string currentRotation = "Vertical";
+        private int currentBoatRotationAngle = 0; //FIXME: Ta bort denna och ha rotationsvärdet i båt-klassen istället
+        private string currentOrientation = "Vertical";
 
         private int currentBoatVisualIndex = 0;
         private string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
 
-        private Classes.Boat currentOptionBoat;
+        private Classes.Boat currentVisualBoat;
 
         public static string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         public MainWindow()
@@ -142,7 +142,7 @@ namespace Battleships_WPF
                 BodyImage.Width = 51;
                 BodyImage.Height = 153;
 
-                currentRotation = "Vertical";
+                currentOrientation = "Vertical";
 
                 //FIXME : placeringen av båten, ligger lite off center nu
                 Canvas.SetLeft(BodyImage, 80);
@@ -152,7 +152,7 @@ namespace Battleships_WPF
                 BodyImage.Width = 153;
                 BodyImage.Height = 51;
 
-                currentRotation = "Horizontal";
+                currentOrientation = "Horizontal";
 
                 //FIXME : placeringen av båten, ligger lite off center nu
                 Canvas.SetLeft(BodyImage, 30);
@@ -192,14 +192,41 @@ namespace Battleships_WPF
                 {
                     ButtonX.Text = image.Name;
                 }
-                if(currentRotation == "Vertical")
+
+                int boatSize = 3;   //FIXME: Städa upp koden, och dra storleken från en båtklass istället.
+                if(currentBoatVisualIndex == 0)
                 {
-                    Grid.SetRowSpan(element, 3);
+                    boatSize = 3;
+                }
+                else if(currentBoatVisualIndex == 1)
+                {
+                    boatSize = 2;
+                }
+                else if(currentBoatVisualIndex == 2)
+                {
+                    boatSize = 1;
+                }
+
+                if(currentOrientation == "Vertical")
+                {
+                    Image boatImage = data as Image;
+                    if(boatImage != null)
+                    {
+                        boatImage.Height /= 3;
+                        boatImage.Height *= boatSize;
+                    }
+                    Grid.SetRowSpan(element, boatSize);
                     Grid.SetColumnSpan(element, 1);
                 }
-                else if(currentRotation == "Horizontal")
+                else if(currentOrientation == "Horizontal")
                 {
-                    Grid.SetColumnSpan(element, 3);
+                    Image boatImage = data as Image;
+                    if (boatImage != null)
+                    {
+                        boatImage.Width /= 3;
+                        boatImage.Width *= boatSize;
+                    }
+                    Grid.SetColumnSpan(element, boatSize);
                     Grid.SetRowSpan(element, 1);
                 }               
                 watertiles.Children.Add(element);
@@ -311,21 +338,21 @@ namespace Battleships_WPF
             if (ImageCanvas.Children.Count > 0)
             {
                 ImageCanvas.Children.RemoveAt(0);
-                currentBoatRotation += 90;
+                currentBoatRotationAngle += 90;
 
-                if (currentBoatRotation < 0)
+                if (currentBoatRotationAngle < 0)
                 {
-                    currentBoatRotation = 270;
+                    currentBoatRotationAngle = 270;
                 }
 
-                if (currentBoatRotation > 360)
+                if (currentBoatRotationAngle > 360)
                 {
-                    currentBoatRotation = 90;
+                    currentBoatRotationAngle = 90;
                 }
 
-                CreateBoatImage(currentBoatRotation, boatLibrary[currentBoatVisualIndex]);
+                CreateBoatImage(currentBoatRotationAngle, boatLibrary[currentBoatVisualIndex]);
             }
-            ButtonX.Text = $"Spin : {currentBoatRotation}";
+            ButtonX.Text = $"Spin : {currentBoatRotationAngle}";
         }
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
