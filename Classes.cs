@@ -108,11 +108,11 @@ namespace Battleships_WPF
         {
             public int playerID, PlayerBoats;
             public List<Boat> boats;
-            public Player(int playerID, int playerBoats, List<Boat> boats)
+            public Player(int playerID, int playerBoats)
             {
                 this.playerID = playerID;
                 PlayerBoats = playerBoats;
-                this.boats = boats;
+                this.boats = new List<Boat>();
             }
             public int AliveBoats()
             {

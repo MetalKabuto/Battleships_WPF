@@ -22,6 +22,7 @@ namespace Battleships_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Classes.Player MainPlayer = new Classes.Player(1, 3);
         public static MainWindow Instance { get; private set; }
 
         public static string MouseHover;
@@ -49,9 +50,40 @@ namespace Battleships_WPF
 
             currentMatch = new Classes.Match(-1, -1, -1, -1);
             currentMatch.CreateMap(watertiles, watertiles2);
-               
+            
             previewWindow.CreateBoatImage(ImageCanvas);
             currentMatch.CreateTitleImage(TitleCanvas);
+        }
+
+        private Classes.Boat addBoatParts(Classes.Boat boat)
+        {
+            for (int i = 0;i < boat.BoatSize;i++)
+            {
+                boat.parts.Add(new Classes.BoatParts(0, 0));
+            }
+            return boat;
+        }
+
+        private Classes.Boat SetBoatPartPositions(Classes.Boat boat)
+        {
+            int originalRow = boat.row_number;
+            int originalCol = boat.column_number;
+            foreach(Classes.BoatParts boatPart in boat.parts)
+            {
+                if(boat.currentOrientation == "Horizontal")
+                {
+                    boatPart.rowPos = originalRow;
+                    boatPart.colPos = originalCol;
+                    originalCol += 1;
+                }
+                else if(boat.currentOrientation == "Vertical")
+                {
+                    boatPart.rowPos = originalRow;
+                    boatPart.colPos = originalCol;
+                    originalRow += 1;
+                }
+            }
+            return boat;
         }
         private void TitleButton_Click(object sender, RoutedEventArgs e)
         {
@@ -157,7 +189,7 @@ namespace Battleships_WPF
                 };
 
                 boatTemplate.boatImage = BodyImage;
-
+                MainPlayer.boats.Add(addBoatParts(new Classes.Boat(boatTemplate)));
                 boatTemplates.Add(boatTemplate);
             }
         }
@@ -195,10 +227,6 @@ namespace Battleships_WPF
                 Grid.SetRow(element, r);
 
                 Image image = (Image)data;
-                if (image != null)
-                {
-                    ButtonX.Text = image.Name;
-                }
 
                 int boatSize = currentPreviewBoat.BoatSize;
 
@@ -210,6 +238,7 @@ namespace Battleships_WPF
                         boatImage.Height /= 3;
                         boatImage.Height *= boatSize;
                     }
+                    MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex].currentOrientation = "Vertical";
                     Grid.SetRowSpan(element, boatSize);
                     Grid.SetColumnSpan(element, 1);
                 }
@@ -221,6 +250,7 @@ namespace Battleships_WPF
                         boatImage.Width /= 3;
                         boatImage.Width *= boatSize;
                     }
+                    MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex].currentOrientation = "Horizontal";
                     Grid.SetColumnSpan(element, boatSize);
                     Grid.SetRowSpan(element, 1);
                 }
@@ -236,6 +266,9 @@ namespace Battleships_WPF
                 {
                     watertiles.Children.Remove(checker);
                 }
+                MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex].column_number = c;
+                MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex].row_number = r;
+                MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex] = SetBoatPartPositions(MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex]);
                 watertiles.Children.Add(element);
 
             }
@@ -280,7 +313,7 @@ namespace Battleships_WPF
         {
             Button srcButton = e.Source as Button;
             string buttonpressed = srcButton.Name;
-            ButtonX.Text = buttonpressed;
+            ButtonX.Text = buttonpressed;              
         }
 
         public void button_Enter(object sender, MouseEventArgs e)
