@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Battleships_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="1100">
+        Title="MainWindow" Height="508" Width="1110">
     <Grid>
         <Canvas Background="Transparent" Name="TitleCanvas" Height="200" Width="200" VerticalAlignment="Top" HorizontalAlignment="Left"></Canvas>
         <Button Name="TitleButton" Click="TitleButton_Click" Content="Begin Game" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80"/>
-        <Grid Name= "watertiles" DragLeave="Drag_Leave" Height="465" Width="450" VerticalAlignment="Bottom" HorizontalAlignment="Left" Drop="GridDrop" AllowDrop="True" Visibility="Hidden">
+        <Border Name="Border1" HorizontalAlignment="Left" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="4" Visibility="Hidden">
+            <Grid Name= "watertiles" DragLeave="Drag_Leave" Height="465" Width="450" VerticalAlignment="Bottom" HorizontalAlignment="Left" Drop="GridDrop" AllowDrop="True" Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -44,6 +45,8 @@
             <Rectangle  Name="wall7" Grid.Column= "9" Grid.Row="7" Fill="Black"></Rectangle>
             <Rectangle  Name="wall8" Grid.Column= "9" Grid.Row="8" Fill="Black"></Rectangle>
         </Grid>
+        </Border>
+        <Border Name="Border2" HorizontalAlignment="Left" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="4" Visibility="Hidden">
         <Grid Name="watertiles2" Height="465" Width="440" Margin="450,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -69,24 +72,25 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
         </Grid>
+        </Border>
         <!--Var tvungen att lägga till ett namn för att kunna gömma/visa den -->
-        <Grid Name="ButtonGrid" Margin="855,10,-148,10" Width="100" Visibility="Hidden">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="238*"/>
-                <RowDefinition Height="227*"/>
-            </Grid.RowDefinitions>
-            <TextBox Name="ButtonX" Text="ButtonPressed" Margin="-105,-13,10,177" TextWrapping="Wrap">
-            </TextBox>
-            <TextBox Name="MousePositionText" Text="MousePos" Margin="-105,24,10,154">
-            </TextBox>
-            <!-- Knappar och image fältet. Tänker att det ska byta bild när man trycker på 'spin' eller 'next'. -->
-            <Button Content="Previous" Click="PreviousButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-90,0,0,40" Height="35" Width="70" Background="Yellow" Grid.Row="1"/>
-            <Button Content="Next" Click="NextButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-20,0,0,40" Height="35" Width="70" Background="Red" Grid.Row="1"/>
-            <Button Content="Start Match" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-90,0,0,0" Height="35" Width="70" Background="Green" Grid.Row="1"/>
-            <Button Content="Spin ->" Click="SpinButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-20,0,0,0" Height="35" Width="70" Background="Teal" Grid.Row="1"/>
-            <!--Image MouseMove="BoatImage_MouseMove" Name="BoatImage" Margin="-80,184,60,134" Stretch="Fill"/> -->
-            <!--Flyttade canvasen med båtar inuti ButtonGrid för att kunna gömma den på 'huvudmenyn'.  -->
-            <Canvas Background="Transparent" Name="ImageCanvas" Height="302" Width="205" VerticalAlignment="Top" HorizontalAlignment="Right" AllowDrop="True" Drop="ImageDrop" Margin="0,95,0,0" DragLeave="Drag_Leave"></Canvas>
-        </Grid>
+        <Border Name="Border3" BorderBrush="Black" BorderThickness="6" Visibility="Hidden">
+            <Grid Name="ButtonGrid" Margin="855,10,-148,10" Width="100" Visibility="Hidden">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="238*"/>
+                    <RowDefinition Height="227*"/>
+                </Grid.RowDefinitions>
+                <TextBox BorderBrush="Black" BorderThickness="5" Width="195" Height="35" Name="ButtonX" Text="ButtonPressed" Margin="-105,-15,6,195" TextWrapping="Wrap"></TextBox>
+                <TextBox Name="MousePositionText" Text="MousePos" Margin="-103,24,7,154" BorderBrush="Black" BorderThickness="5"></TextBox>
+                <!-- Knappar och image fältet. Tänker att det ska byta bild när man trycker på 'spin' eller 'next'. -->
+                <Button BorderBrush="Black" BorderThickness="2" Content="Previous" Click="PreviousButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-75,0,-15,40" Height="35" Width="70" Background="Yellow" Grid.Row="1"/>
+                <Button BorderBrush="Black" BorderThickness="2" Content="Next" Click="NextButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-5,0,-15,40" Height="35" Width="70" Background="Red" Grid.Row="1"/>
+                <Button BorderBrush="Black" BorderThickness="2" Content="Start Match" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-75,0,-15,0" Height="35" Width="70" Background="Green" Grid.Row="1"/>
+                <Button BorderBrush="Black" BorderThickness="2" Content="Spin ->" Click="SpinButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-5,0,-15,0" Height="35" Width="70" Background="Teal" Grid.Row="1"/>
+                <!--Image MouseMove="BoatImage_MouseMove" Name="BoatImage" Margin="-80,184,60,134" Stretch="Fill"/> -->
+                <!--Flyttade canvasen med båtar inuti ButtonGrid för att kunna gömma den på 'huvudmenyn'.  -->
+                <Canvas Background="LightGray" Name="ImageCanvas" Height="290" Width="190" VerticalAlignment="Top" HorizontalAlignment="Right" AllowDrop="True" Drop="ImageDrop" Margin="15,70,10,0" DragLeave="Drag_Leave"></Canvas>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

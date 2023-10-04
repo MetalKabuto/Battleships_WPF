@@ -93,6 +93,9 @@ namespace Battleships_WPF
             watertiles.Visibility = Visibility.Visible;
             watertiles2.Visibility = Visibility.Visible;
             ButtonGrid.Visibility = Visibility.Visible;
+            Border1.Visibility = Visibility.Visible;
+            Border2.Visibility = Visibility.Visible;
+            Border3.Visibility = Visibility.Visible;
         }
         void LoadImages()
         {
