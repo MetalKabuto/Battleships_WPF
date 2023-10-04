@@ -5,11 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Battleships_WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="508" Width="1110">
+        Title="MainWindow" Height="550" Width="1110">
     <Grid>
         <Canvas Background="Transparent" Name="TitleCanvas" Height="200" Width="200" VerticalAlignment="Top" HorizontalAlignment="Left"></Canvas>
         <Button Name="TitleButton" Click="TitleButton_Click" Content="Begin Game" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80"/>
-        <Border Name="Border1" HorizontalAlignment="Left" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="4" Visibility="Hidden">
+        <!--Hittat fontweight https://learn.microsoft.com/en-us/dotnet/api/system.windows.fontweights?view=windowsdesktop-7.0 -->
+        <TextBlock Name ="P1TextBlock" HorizontalAlignment="Left" Margin="200,10,0,0" TextWrapping="Wrap" Text="Player Field" FontWeight="Bold" FontFamily="Calibri" FontSize="20" VerticalAlignment="Top" Visibility="Hidden"/>
+        <TextBlock Name ="P2TextBlock" HorizontalAlignment="Right" Margin="0,10,350,0" TextWrapping="Wrap" Text="AI Field" FontWeight="Bold" FontFamily="Gothic" FontSize="20" VerticalAlignment="Top" Visibility="Hidden"/>
+        <Border Name="Border1" HorizontalAlignment="Left" VerticalAlignment="Bottom"  BorderBrush="Black" BorderThickness="4" Visibility="Hidden">
             <Grid Name= "watertiles" DragLeave="Drag_Leave" Height="465" Width="450" VerticalAlignment="Bottom" HorizontalAlignment="Left" Drop="GridDrop" AllowDrop="True" Visibility="Hidden">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -46,7 +49,7 @@
             <Rectangle  Name="wall8" Grid.Column= "9" Grid.Row="8" Fill="Black"></Rectangle>
         </Grid>
         </Border>
-        <Border Name="Border2" HorizontalAlignment="Left" VerticalAlignment="Top"  BorderBrush="Black" BorderThickness="4" Visibility="Hidden">
+        <Border Name="Border2" HorizontalAlignment="Left" VerticalAlignment="Bottom"  BorderBrush="Black" BorderThickness="4" Visibility="Hidden">
         <Grid Name="watertiles2" Height="465" Width="440" Margin="450,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
