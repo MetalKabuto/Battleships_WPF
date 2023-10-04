@@ -10,8 +10,12 @@
         <Canvas Background="Transparent" Name="TitleCanvas" Height="200" Width="200" VerticalAlignment="Top" HorizontalAlignment="Left"></Canvas>
         <Button Name="TitleButton" Click="TitleButton_Click" Content="Begin Game" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80"/>
         <!--Hittat fontweight https://learn.microsoft.com/en-us/dotnet/api/system.windows.fontweights?view=windowsdesktop-7.0 -->
-        <TextBlock Name ="P1TextBlock" HorizontalAlignment="Left" Margin="200,10,0,0" TextWrapping="Wrap" Text="Player Field" FontWeight="Bold" FontFamily="Calibri" FontSize="20" VerticalAlignment="Top" Visibility="Hidden"/>
-        <TextBlock Name ="P2TextBlock" HorizontalAlignment="Right" Margin="0,10,350,0" TextWrapping="Wrap" Text="AI Field" FontWeight="Bold" FontFamily="Gothic" FontSize="20" VerticalAlignment="Top" Visibility="Hidden"/>
+        <Border Name="Border4" Background="Black" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Width="450" Height="50"  BorderBrush="Black" BorderThickness="6" Visibility="Hidden">
+            <TextBlock Name ="P1TextBlock" Width="445" Foreground="White" HorizontalAlignment="Left" Margin="0,0,0,0" TextAlignment="Center" TextWrapping="Wrap" Text="Player Field" FontWeight="Bold" FontFamily="Calibri" FontSize="20" VerticalAlignment="Top" Visibility="Hidden"/>
+        </Border>
+        <Border Name="Border5" VerticalAlignment="Top" Background="Black" Width="451" Height="50" Margin="250,0,-5,0" BorderBrush="Black" BorderThickness="6" Visibility="Hidden">
+            <TextBlock Name ="P2TextBlock" Width="445" Foreground="White" HorizontalAlignment="Left" Margin="0,0,0,0" TextAlignment="Center"  TextWrapping="Wrap" Text="AI Field" FontWeight="Bold" FontFamily="Gothic" FontSize="20" VerticalAlignment="Top" Visibility="Hidden"/>
+        </Border>
         <Border Name="Border1" HorizontalAlignment="Left" VerticalAlignment="Bottom"  BorderBrush="Black" BorderThickness="4" Visibility="Hidden">
             <Grid Name= "watertiles" DragLeave="Drag_Leave" Height="465" Width="450" VerticalAlignment="Bottom" HorizontalAlignment="Left" Drop="GridDrop" AllowDrop="True" Visibility="Hidden">
             <Grid.ColumnDefinitions>
@@ -83,8 +87,8 @@
                     <RowDefinition Height="238*"/>
                     <RowDefinition Height="227*"/>
                 </Grid.RowDefinitions>
-                <TextBox BorderBrush="Black" BorderThickness="5" Width="195" Height="35" Name="ButtonX" Text="ButtonPressed" Margin="-115,-15,2,195" TextWrapping="Wrap"></TextBox>
-                <TextBox Name="MousePositionText" Text="MousePos" Width="195" Margin="-112,20,4,154" BorderBrush="Black" BorderThickness="5"></TextBox>
+                <TextBox BorderBrush="Black" BorderThickness="5" Width="200" Height="35" Name="ButtonX" Text="ButtonPressed" Margin="-125,-45,-15,195" TextWrapping="Wrap"></TextBox>
+                <TextBox Name="MousePositionText" Text="MousePos" Width="200" Margin="-125,15,-15,175" BorderBrush="Black" BorderThickness="5"></TextBox>
                 <!-- Knappar och image fältet. Tänker att det ska byta bild när man trycker på 'spin' eller 'next'. -->
                 <Button BorderBrush="Black" BorderThickness="2" Content="Previous" Click="PreviousButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-75,0,-15,40" Height="35" Width="70" Background="Yellow" Grid.Row="1"/>
                 <Button BorderBrush="Black" BorderThickness="2" Content="Next" Click="NextButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-5,0,-15,40" Height="35" Width="70" Background="Red" Grid.Row="1"/>

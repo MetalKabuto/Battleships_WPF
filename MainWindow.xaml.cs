@@ -96,6 +96,8 @@ namespace Battleships_WPF
             Border1.Visibility = Visibility.Visible;
             Border2.Visibility = Visibility.Visible;
             Border3.Visibility = Visibility.Visible;
+            Border4.Visibility = Visibility.Visible;
+            Border5.Visibility = Visibility.Visible;
             P1TextBlock.Visibility = Visibility.Visible;
             P2TextBlock.Visibility = Visibility.Visible;
         }
