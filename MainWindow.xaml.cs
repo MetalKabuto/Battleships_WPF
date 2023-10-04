@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static Battleships_WPF.Classes;
 
 namespace Battleships_WPF
 {
@@ -353,17 +355,25 @@ namespace Battleships_WPF
 
         public static void BodyImage_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            //Det går inte att klicka på skeppen när matchen har börjat.
+            if (matchStart == false)
             {
-                Image currentImage = Images[Classes.PreviewWindow.currentBoatVisualIndex];
-                DragDrop.DoDragDrop(currentImage, new DataObject(DataFormats.Serializable, currentImage), DragDropEffects.Move);
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    Image currentImage = Images[Classes.PreviewWindow.currentBoatVisualIndex];
+                    DragDrop.DoDragDrop(currentImage, new DataObject(DataFormats.Serializable, currentImage), DragDropEffects.Move);
+                }
+            }
+            else
+            {
+                //Gör inget
             }
         }
         private void ImageDrop(object sender, DragEventArgs e)
         {
             Point dropposition = e.GetPosition(ImageCanvas);
-            Canvas.SetLeft(ImageCanvas.Children[0], dropposition.X-25);
-            Canvas.SetTop(ImageCanvas.Children[0], dropposition.Y-50);
+            Canvas.SetLeft(ImageCanvas.Children[0], dropposition.X - 25);
+            Canvas.SetTop(ImageCanvas.Children[0], dropposition.Y - 50);
         }
 
         public void button_Click(object sender, RoutedEventArgs e)
@@ -381,20 +391,46 @@ namespace Battleships_WPF
             MouseHover = buttonHover;
 
         }
-
+        //Används för att 'stänga av' de andra knapparna när man tryckt match start.
+        //Var tvungen att göra den static för att det skulle funka med 'BodyImage_MouseMove', eftersom den också är static.
+        static bool matchStart = false;
+        private void StartMatch_Click(object sender, RoutedEventArgs e)
+        {
+            matchStart = true;
+        }
         private void SpinButton_Click(object sender, RoutedEventArgs e)
         {
-            previewWindow.SpinBoat(ImageCanvas, currentPreviewBoat);
+            if (matchStart == false){
+                previewWindow.SpinBoat(ImageCanvas, currentPreviewBoat);
+            }
+            else
+            {
+                //Gör inget
+            }
         }
 
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
-            previewWindow.NextButton_Click(ImageCanvas);
+            if (matchStart == false)
+            {
+                previewWindow.NextButton_Click(ImageCanvas);
+            }
+            else
+            {
+                //Gör inget
+            }
         }
 
         private void PreviousButton_Click(object sender, RoutedEventArgs e)
         {
-            previewWindow.PreviousButton_Click(ImageCanvas);
+            if (matchStart == false)
+            {
+                previewWindow.PreviousButton_Click(ImageCanvas);
+            }
+            else
+            {
+                //Gör inget
+            }
         }
     }
 }
