@@ -278,24 +278,21 @@ namespace Battleships_WPF
                     BodyImage.Width = 51;
                     BodyImage.Height = 153;
 
-                    //currentOrientation = "Vertical";
-
                     //FIXME : placeringen av båten, ligger lite off center nu
-                    Canvas.SetLeft(BodyImage, 80);
+                    //Canvas.SetLeft(BodyImage, 80);
+                    
                 }
                 else if (rotationValue == 90 || rotationValue == 270)
                 {
                     BodyImage.Width = 153;
                     BodyImage.Height = 51;
 
-                    //currentOrientation = "Horizontal";
-
                     //FIXME : placeringen av båten, ligger lite off center nu
-                    Canvas.SetLeft(BodyImage, 30);
+                    //Canvas.SetLeft(BodyImage, 30);
                 }
 
                 //Canvas.SetLeft(BodyImage, 80);
-                Canvas.SetTop(BodyImage, 80);
+                Canvas.SetTop(BodyImage, (MainWindow.Instance.ImageCanvas.Width / 2.0) - (BodyImage.Height / 2.0));
                 int index = -1;
                 for (int i = 0; i < MainWindow.Images.Count; i++)
                 {
@@ -321,11 +318,17 @@ namespace Battleships_WPF
                 if (newBoat.currentRotationAngle == 0 || newBoat.currentRotationAngle == 180)
                 {
                     newBoat.currentOrientation = "Vertical";
+                    //Canvas.SetLeft(BodyImage, 80);
                 }
                 else if (newBoat.currentRotationAngle == 90 || newBoat.currentRotationAngle == 270)
                 {
                     newBoat.currentOrientation = "Horizontal";
+                    
                 }
+
+                double xPos = (MainWindow.Instance.ImageCanvas.Width / 2.0) - (BodyImage.Width / 2.0);
+
+                Canvas.SetLeft(BodyImage, xPos);
 
                 MainWindow.Instance.currentPreviewBoat = newBoat;
             }
