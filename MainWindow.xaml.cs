@@ -385,6 +385,7 @@ namespace Battleships_WPF
                 object data = e.Data.GetData(DataFormats.Serializable);
                 if (data is UIElement element)
                 {
+                    ImageCanvas.Children.Remove(element);
                     watertiles.Children.Remove(element);
                 }
             }
