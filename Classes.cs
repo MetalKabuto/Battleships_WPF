@@ -73,7 +73,7 @@ namespace Battleships_WPF
                         MyControl1.Background = brush;
                         MyControl1.Name = "Enemy" + count2.ToString();
                         MyControl1.Click += new RoutedEventHandler(MainWindow.Instance.button_Click);
-                        MyControl1.MouseEnter += new MouseEventHandler(MainWindow.Instance.button_Click);
+                        MyControl1.MouseEnter += new MouseEventHandler(MainWindow.Instance.button_Enter);
                         if (j != 9)
                         {
                             Grid.SetColumn(MyControl1, j);

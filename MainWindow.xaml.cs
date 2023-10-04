@@ -23,6 +23,7 @@ namespace Battleships_WPF
     public partial class MainWindow : Window
     {
         public Classes.Player MainPlayer = new Classes.Player(1, 3);
+        public Classes.Player Enemy = new Classes.Player(0, 3);
         public static MainWindow Instance { get; private set; }
 
         public static string MouseHover;
@@ -53,8 +54,56 @@ namespace Battleships_WPF
             
             previewWindow.CreateBoatImage(ImageCanvas);
             currentMatch.CreateTitleImage(TitleCanvas);
+            AI_Randomize();
         }
 
+        private void AI_Randomize()
+        {
+            string[] orientations = new string[] { "Horizontal", "Vertical"};
+            for (int i = 0; i < Enemy.boats.Count; i++)
+            {
+                Random randomRow = new Random();
+                int row = randomRow.Next(9);
+                Random randomCol = new Random();
+                int col = randomCol.Next(9);
+                Random Ori = new Random();
+                int index = Ori.Next(orientations.Length);
+                Enemy.boats[i].currentOrientation = orientations[index];
+                if(col == 8 && Enemy.boats[i].currentOrientation == "Horizontal")
+                {
+                    if (Enemy.boats[i].BoatSize == 3)
+                    {
+                        col -= 2;
+                    }
+                    else if(Enemy.boats[i].BoatSize == 2)
+                    {
+                        col -= 1;
+                    }
+                }else if(col == 7 && Enemy.boats[i].BoatSize == 3 && Enemy.boats[i].currentOrientation == "Horizontal")
+                {
+                    col -= 1;
+                }
+                if(row == 8 && Enemy.boats[i].currentOrientation == "Vertical")
+                {
+                    if (Enemy.boats[i].BoatSize == 3)
+                    {
+                        row -= 2;
+                    }
+                    else if (Enemy.boats[i].BoatSize == 2)
+                    {
+                        row -= 1;
+                    }
+                }
+                else if (row == 7 && Enemy.boats[i].BoatSize == 3 && Enemy.boats[i].currentOrientation == "Vertical")
+                {
+                    row -= 1;
+                }
+                Enemy.boats[i].row_number = row;
+                Enemy.boats[i].column_number = col;
+                SetBoatPartPositions(Enemy.boats[i]);
+
+            }
+        }
         private Classes.Boat addBoatParts(Classes.Boat boat)
         {
             for (int i = 0;i < boat.BoatSize;i++)
@@ -197,6 +246,7 @@ namespace Battleships_WPF
 
                 boatTemplate.boatImage = BodyImage;
                 MainPlayer.boats.Add(addBoatParts(new Classes.Boat(boatTemplate)));
+                Enemy.boats.Add(addBoatParts(new Classes.Boat(boatTemplate)));
                 boatTemplates.Add(boatTemplate);
             }
         }
@@ -320,7 +370,7 @@ namespace Battleships_WPF
         {
             Button srcButton = e.Source as Button;
             string buttonpressed = srcButton.Name;
-            ButtonX.Text = buttonpressed;              
+            ButtonX.Text = buttonpressed;
         }
 
         public void button_Enter(object sender, MouseEventArgs e)
