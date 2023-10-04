@@ -332,6 +332,7 @@ namespace Battleships_WPF
                     Image boatImage = data as Image;
                     if (boatImage != null)
                     {
+                        boatImage.Height = 153;
                         boatImage.Height /= 3;
                         boatImage.Height *= boatSize;
                     }
@@ -344,6 +345,7 @@ namespace Battleships_WPF
                     Image boatImage = data as Image;
                     if (boatImage != null)
                     {
+                        boatImage.Width = 153;
                         boatImage.Width /= 3;
                         boatImage.Width *= boatSize;
                     }
