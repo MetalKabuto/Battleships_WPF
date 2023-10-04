@@ -30,6 +30,8 @@ namespace Battleships_WPF
 
         public static string MouseHover;
 
+        public static int[] TakenRowCoords = new int[50];
+        public static int[] TakenColCoords = new int[50];
         public static List<Image> Images = new List<Image>();
         public static string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
         public static List<Classes.BoatTemplate> boatTemplates = new List<Classes.BoatTemplate>();
@@ -53,60 +55,95 @@ namespace Battleships_WPF
 
             currentMatch = new Classes.Match(-1, -1, -1, -1);
             currentMatch.CreateMap(watertiles, watertiles2);
-            
+
             previewWindow.CreateBoatImage(ImageCanvas);
             currentMatch.CreateTitleImage(TitleCanvas);
             AI_Randomize();
         }
 
-        private void AI_Randomize()
+        public Boat Randomize_Boat(Boat boat)
         {
-            string[] orientations = new string[] { "Horizontal", "Vertical"};
-            for (int i = 0; i < Enemy.boats.Count; i++)
+            string[] orientations = new string[] { "Horizontal", "Vertical" };
+
+            Classes.Boat newboat = boat;
+            Random randomRow = new Random();
+            int row = randomRow.Next(9);
+            Random randomCol = new Random();
+            int col = randomCol.Next(9);
+            Random Ori = new Random();
+            int index = Ori.Next(orientations.Length);
+            newboat.currentOrientation = orientations[index];
+            if (col == 8 && newboat.currentOrientation == "Horizontal")
             {
-                Random randomRow = new Random();
-                int row = randomRow.Next(9);
-                Random randomCol = new Random();
-                int col = randomCol.Next(9);
-                Random Ori = new Random();
-                int index = Ori.Next(orientations.Length);
-                Enemy.boats[i].currentOrientation = orientations[index];
-                if(col == 8 && Enemy.boats[i].currentOrientation == "Horizontal")
+                if (newboat.BoatSize == 3)
                 {
-                    if (Enemy.boats[i].BoatSize == 3)
-                    {
-                        col -= 2;
-                    }
-                    else if(Enemy.boats[i].BoatSize == 2)
-                    {
-                        col -= 1;
-                    }
-                }else if(col == 7 && Enemy.boats[i].BoatSize == 3 && Enemy.boats[i].currentOrientation == "Horizontal")
+                    col -= 2;
+                }
+                else if (newboat.BoatSize == 2)
                 {
                     col -= 1;
                 }
-                if(row == 8 && Enemy.boats[i].currentOrientation == "Vertical")
+            }
+            else if (col == 7 && newboat.BoatSize == 3 && newboat.currentOrientation == "Horizontal")
+            {
+                col -= 1;
+            }
+            if (row == 8 && newboat.currentOrientation == "Vertical")
+            {
+                if (newboat.BoatSize == 3)
                 {
-                    if (Enemy.boats[i].BoatSize == 3)
-                    {
-                        row -= 2;
-                    }
-                    else if (Enemy.boats[i].BoatSize == 2)
-                    {
-                        row -= 1;
-                    }
+                    row -= 2;
                 }
-                else if (row == 7 && Enemy.boats[i].BoatSize == 3 && Enemy.boats[i].currentOrientation == "Vertical")
+                else if (newboat.BoatSize == 2)
                 {
                     row -= 1;
                 }
-                Enemy.boats[i].row_number = row;
-                Enemy.boats[i].column_number = col;
+            }
+            else if (row == 7 && newboat.BoatSize == 3 && newboat.currentOrientation == "Vertical")
+            {
+                row -= 1;
+            }
+            newboat.row_number = row;
+            newboat.column_number = col;
+            return newboat;
+        }
+
+        private void AI_Randomize()
+        {
+            for (int i = 0; i < Enemy.boats.Count; i++)
+            {
+                Enemy.boats[i] = Randomize_Boat(Enemy.boats[i]);
                 SetBoatPartPositions(Enemy.boats[i]);
+                while (CheckOverlappingBoats(Enemy.boats[i]))
+                {
+                    Enemy.boats[i] = Randomize_Boat(Enemy.boats[i]);
+                    SetBoatPartPositions(Enemy.boats[i]);
+                }
 
             }
         }
-        private Classes.Boat addBoatParts(Classes.Boat boat)
+
+        private bool CheckOverlappingBoats(Boat boat)
+        {
+            foreach(BoatParts part in boat.parts)
+            {
+                foreach(Boat b in Enemy.boats)
+                {
+                    if(boat.boatName != b.boatName)
+                    {
+                        foreach(BoatParts p in b.parts)
+                        {
+                            if(p.rowPos == part.rowPos && p.colPos  == part.colPos)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        private Boat addBoatParts(Boat boat)
         {
             for (int i = 0;i < boat.BoatSize;i++)
             {
@@ -115,7 +152,7 @@ namespace Battleships_WPF
             return boat;
         }
 
-        private Classes.Boat SetBoatPartPositions(Classes.Boat boat)
+        private Boat SetBoatPartPositions(Boat boat)
         {
             int originalRow = boat.row_number;
             int originalCol = boat.column_number;
@@ -134,6 +171,7 @@ namespace Battleships_WPF
                     originalRow += 1;
                 }
             }
+            
             return boat;
         }
         private void TitleButton_Click(object sender, RoutedEventArgs e)
@@ -380,16 +418,18 @@ namespace Battleships_WPF
         {
             Button srcButton = e.Source as Button;
             string buttonpressed = srcButton.Name;
-            ButtonX.Text = buttonpressed;
+            var Pos = (Button)e.Source;
+            int c = Grid.GetColumn(Pos);
+            int r = Grid.GetRow(Pos);
+            ButtonX.Text = $"row: {r} col: {c}";
         }
 
         public void button_Enter(object sender, MouseEventArgs e)
         {
             Button srcButton = e.Source as Button;
             string buttonHover = srcButton.Name;
-            MousePositionText.Text = $"MouseOver : {buttonHover}";
+            //MousePositionText.Text = $"MouseOver : {buttonHover}";
             MouseHover = buttonHover;
-
         }
         //Används för att 'stänga av' de andra knapparna när man tryckt match start.
         //Var tvungen att göra den static för att det skulle funka med 'BodyImage_MouseMove', eftersom den också är static.
