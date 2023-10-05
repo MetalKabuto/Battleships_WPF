@@ -88,7 +88,7 @@
                     <RowDefinition Height="238*"/>
                     <RowDefinition Height="227*"/>
                 </Grid.RowDefinitions>
-                <TextBox BorderBrush="Black" BorderThickness="5" Width="200" Height="35" Name="ButtonX" Text="ButtonPressed" Margin="-125,-45,-15,195" TextWrapping="Wrap"></TextBox>
+                <TextBox BorderBrush="Black" BorderThickness="5" Width="200" Height="35" Name="ButtonX" Text="position" Margin="-125,-45,-15,195" TextWrapping="Wrap"></TextBox>
                 <TextBox Name="MousePositionText" Text="MousePos" Width="200" Margin="-125,15,-15,175" BorderBrush="Black" BorderThickness="5"></TextBox>
                 <!-- Knappar och image fältet. Tänker att det ska byta bild när man trycker på 'spin' eller 'next'. -->
                 <Button BorderBrush="Black" BorderThickness="2" Content="Previous" Click="PreviousButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-75,0,-15,40" Height="35" Width="70" Background="Yellow" Grid.Row="1"/>

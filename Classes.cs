@@ -16,7 +16,7 @@ namespace Battleships_WPF
         public class Match
         {
             List<int> players;
-            int winner, turnid, playerBoats, enemyBoats;
+            public int winner, turnid, playerBoats, enemyBoats;
             public Match(int winner, int turnid, int playerBoats, int enemyBoats)
             {
                 this.players = new List<int>();
@@ -135,7 +135,7 @@ namespace Battleships_WPF
             public int boatID;
             public string boatPath;
 
-            int size, damagedParts;
+            public int size, damagedParts;
             public bool destroyed;
             public List<BoatParts> parts;
 
@@ -400,19 +400,29 @@ namespace Battleships_WPF
             }
         }
 
-        public bool Attack(Player player,int row,int col)
+        public static bool Attack(Player player,int row,int col)
         {
             foreach(Boat b in player.boats)
             {
-                foreach(BoatParts parts in b.parts)
+                if (b.destroyed == false)
                 {
-                    if (parts.rowPos == row && parts.colPos == col)
+                    foreach (BoatParts parts in b.parts)
                     {
-                        parts.damaged = true;
-                        return true;
+                        if (parts.rowPos == row && parts.colPos == col)
+                        {
+                            parts.damaged = true;
+                            b.checkDamage();
+                            if (b.damagedParts == b.size)
+                            {
+                                b.destroyed = true;
+                                player.PlayerBoats -= 1;
+                            }
+                            return true;
+                        }
                     }
                 }
             }
+
             return false;
         }
 

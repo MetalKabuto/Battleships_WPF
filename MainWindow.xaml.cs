@@ -24,8 +24,10 @@ namespace Battleships_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Classes.Player MainPlayer = new Classes.Player(1, 3);
-        public Classes.Player Enemy = new Classes.Player(0, 3);
+        public Player MainPlayer = new Classes.Player(0, 3);
+        public Player Enemy = new Classes.Player(1, 3);
+        public Match match;
+
         public static MainWindow Instance { get; private set; }
 
         public static string MouseHover;
@@ -37,9 +39,9 @@ namespace Battleships_WPF
         public static List<Classes.BoatTemplate> boatTemplates = new List<Classes.BoatTemplate>();
 
         //Preview Window variables
-        public Classes.PreviewWindow previewWindow = new Classes.PreviewWindow();
-        public Classes.Boat currentPreviewBoat;
-        public Classes.Match currentMatch;
+        public PreviewWindow previewWindow = new Classes.PreviewWindow();
+        public Boat currentPreviewBoat;
+        public Match currentMatch;
 
         public static string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         public MainWindow()
@@ -119,7 +121,6 @@ namespace Battleships_WPF
                     Enemy.boats[i] = Randomize_Boat(Enemy.boats[i]);
                     SetBoatPartPositions(Enemy.boats[i]);
                 }
-
             }
         }
 
@@ -421,10 +422,43 @@ namespace Battleships_WPF
         {
             Button srcButton = e.Source as Button;
             string buttonpressed = srcButton.Name;
-            var Pos = (Button)e.Source;
-            int c = Grid.GetColumn(Pos);
-            int r = Grid.GetRow(Pos);
-            ButtonX.Text = $"row: {r} col: {c}";
+            ButtonX.Text = "text";
+            if (matchStart == true && match.winner != 0 && match.winner != 1)
+            {
+                if(match.turnid == 0)
+                {
+                    var Pos = (Button)e.Source;
+                    int c = Grid.GetColumn(Pos);
+                    int r = Grid.GetRow(Pos);
+                    ButtonX.Text = $"row: {r} col: {c}";
+                    if (Attack(Enemy, r, c))
+                    {
+                        Image BodyImage = new Image
+                        {
+                            Width = 51,
+                            Height = 51,
+                            Name = "fire",
+                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Fire.png", UriKind.RelativeOrAbsolute)),
+                            Stretch = Stretch.Fill
+                        };
+                        Grid.SetColumn(BodyImage, c);
+                        Grid.SetRow(BodyImage, r);
+                        watertiles2.Children.Add(BodyImage);
+                        ButtonX.Text = $"Boat Hit in position row: {r} col: {c}";
+                    } 
+                }
+
+            }
+            if (MainPlayer.PlayerBoats == 0)
+            {
+                match.winner = 1;
+                ButtonX.Text = "Enemy Won!!";
+            }
+            else if (Enemy.PlayerBoats == 0)
+            {
+                match.winner = 0;
+                ButtonX.Text = "You won!!!";
+            }
         }
 
         public void button_Enter(object sender, MouseEventArgs e)
@@ -440,6 +474,9 @@ namespace Battleships_WPF
         private void StartMatch_Click(object sender, RoutedEventArgs e)
         {
             matchStart = true;
+            match = new Match(-1,0,MainPlayer.boats.Count, Enemy.boats.Count);
+            MainPlayer.PlayerBoats = MainPlayer.boats.Count;
+            Enemy.PlayerBoats = Enemy.boats.Count;
         }
         private void SpinButton_Click(object sender, RoutedEventArgs e)
         {
