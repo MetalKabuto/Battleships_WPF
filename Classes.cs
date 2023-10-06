@@ -424,5 +424,9 @@ namespace Battleships_WPF
             }
             return false;
         }
+        public bool AIattack()
+        {
+            return false;
+        }
     }
 }

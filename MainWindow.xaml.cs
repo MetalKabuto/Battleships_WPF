@@ -115,15 +115,17 @@ namespace Battleships_WPF
 
         private void AI_Randomize()
         {
-            for (int i = 0; i < Enemy.boats.Count; i++)
+            int i = 0;
+            foreach (Boat testboat in Enemy.boats.ToList())
             {
                 Enemy.boats[i] = Randomize_Boat(Enemy.boats[i]);
                 SetBoatPartPositions(Enemy.boats[i]);
-                while (CheckOverlappingBoats(Enemy.boats[i]))
+                while (CheckOverlappingBoats(Enemy.boats[i]) == true)
                 {
                     Enemy.boats[i] = Randomize_Boat(Enemy.boats[i]);
                     SetBoatPartPositions(Enemy.boats[i]);
                 }
+                i += 1;
             }
         }
 
@@ -166,98 +168,12 @@ namespace Battleships_WPF
                 {
                     boatPart.rowPos = originalRow;
                     boatPart.colPos = originalCol;
-                    //If satserna kan tas bort efter tester
-                    if (boat.size == 3)
-                    {
-                        Image BodyImage = new Image
-                        {
-                            Width = 51,
-                            Height = 51,
-                            Name = "three",
-                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\3.png", UriKind.RelativeOrAbsolute)),
-                            Stretch = Stretch.Fill
-                        };
-                        Grid.SetColumn(BodyImage, originalCol);
-                        Grid.SetRow(BodyImage, originalRow);
-                        watertiles2.Children.Add(BodyImage);
-                    }
-                    else if (boat.size == 2)
-                    {
-                        Image BodyImage = new Image
-                        {
-                            Width = 51,
-                            Height = 51,
-                            Name = "two",
-                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\2.png", UriKind.RelativeOrAbsolute)),
-                            Stretch = Stretch.Fill
-                        };
-                        Grid.SetColumn(BodyImage, originalCol);
-                        Grid.SetRow(BodyImage, originalRow);
-                        watertiles2.Children.Add(BodyImage);
-                    }
-                    else if (boat.size == 1)
-                    {
-                        Image BodyImage = new Image
-                        {
-                            Width = 51,
-                            Height = 51,
-                            Name = "one",
-                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\1.png", UriKind.RelativeOrAbsolute)),
-                            Stretch = Stretch.Fill
-                        };
-                        Grid.SetColumn(BodyImage, originalCol);
-                        Grid.SetRow(BodyImage, originalRow);
-                        watertiles2.Children.Add(BodyImage);
-                    }
                     originalCol += 1;
                 }
                 else if(boat.currentOrientation == "Vertical")
                 {
                     boatPart.rowPos = originalRow;
                     boatPart.colPos = originalCol;
-                    //If satserna kan tas bort efter tester
-                    if (boat.size == 3)
-                    {
-                        Image BodyImage = new Image
-                        {
-                            Width = 51,
-                            Height = 51,
-                            Name = "three",
-                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\3.png", UriKind.RelativeOrAbsolute)),
-                            Stretch = Stretch.Fill
-                        };
-                        Grid.SetColumn(BodyImage, originalCol);
-                        Grid.SetRow(BodyImage, originalRow);
-                        watertiles2.Children.Add(BodyImage);
-                    }
-                    else if (boat.size == 2)
-                    {
-                        Image BodyImage = new Image
-                        {
-                            Width = 51,
-                            Height = 51,
-                            Name = "two",
-                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\2.png", UriKind.RelativeOrAbsolute)),
-                            Stretch = Stretch.Fill
-                        };
-                        Grid.SetColumn(BodyImage, originalCol);
-                        Grid.SetRow(BodyImage, originalRow);
-                        watertiles2.Children.Add(BodyImage);
-                    }
-                    else if (boat.size == 1)
-                    {
-                        Image BodyImage = new Image
-                        {
-                            Width = 51,
-                            Height = 51,
-                            Name = "one",
-                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\1.png", UriKind.RelativeOrAbsolute)),
-                            Stretch = Stretch.Fill
-                        };
-                        Grid.SetColumn(BodyImage, originalCol);
-                        Grid.SetRow(BodyImage, originalRow);
-                        watertiles2.Children.Add(BodyImage);
-                    }
                     originalRow += 1;
                 }
             }
@@ -517,14 +433,14 @@ namespace Battleships_WPF
             ButtonX.Text = "text";
             if (matchStart == true && match.winner != 0 && match.winner != 1)
             {
-                //Byt turnid till 1 när det är AIs tur? Lägg else if statement under denna.
+                //Tror man kan ta bort turnid
                 if(match.turnid == 0)
                 {
                     var Pos = (Button)e.Source;
                     int c = Grid.GetColumn(Pos);
                     int r = Grid.GetRow(Pos);
                     ButtonX.Text = $"row: {r} col: {c}";
-                    if (Attack(Enemy, r, c))
+                    if (Attack(Enemy, r, c) == true)
                     {
                         Image BodyImage = new Image
                         {
@@ -554,6 +470,48 @@ namespace Battleships_WPF
                         Grid.SetRow(BodyImage, r);
                         watertiles2.Children.Add(BodyImage);
                         ButtonX.Text = $"No ship at the position: {r} col: {c}";
+
+                        /*Om man missar attackerar AI. Finns det bättre sätt att aktivera AI på?
+                        Typ en separat knapp eller nått.
+                        button_click blir världens längsta metod så som jag gjort.
+                        Copy paste från attacksekvensen för spelaren, fast med ändrade
+                        variabelnamn. 
+                        AI väljer sin attack på en slumpad ruta, och kan
+                        attackera samma ruta flera gånger.
+                         */
+                        Random AIRandomRow = new Random();
+                        int targetRow = AIRandomRow.Next(9);
+                        Random AIRandomCol = new Random();
+                        int targetCol = AIRandomCol.Next(9);
+                        if (Attack(MainPlayer, targetRow, targetCol) == true)
+                        {
+                            //Var tvungen att byta namn på Image, eftersom BodyImage används redan.
+                            Image AIhitimage = new Image
+                            {
+                                Width = 51,
+                                Height = 51,
+                                Name = "fire",
+                                Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Fire.png", UriKind.RelativeOrAbsolute)),
+                                Stretch = Stretch.Fill
+                            };
+                            Grid.SetColumn(AIhitimage, targetCol);
+                            Grid.SetRow(AIhitimage, targetRow);
+                            watertiles.Children.Add(AIhitimage);
+                        }
+                        else
+                        {
+                            Image AImissimage = new Image
+                            {
+                                Width = 51,
+                                Height = 51,
+                                Name = "miss",
+                                Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Miss.png", UriKind.RelativeOrAbsolute)),
+                                Stretch = Stretch.Fill
+                            };
+                            Grid.SetColumn(AImissimage, targetCol);
+                            Grid.SetRow(AImissimage, targetRow);
+                            watertiles.Children.Add(AImissimage);
+                        }
                     }
                 }
             }
