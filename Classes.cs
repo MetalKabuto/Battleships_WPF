@@ -422,9 +422,7 @@ namespace Battleships_WPF
                     }
                 }
             }
-
             return false;
         }
-
     }
 }
