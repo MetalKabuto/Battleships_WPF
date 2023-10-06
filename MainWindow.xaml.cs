@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -32,11 +33,10 @@ namespace Battleships_WPF
 
         public static string MouseHover;
 
-        public static int[] TakenRowCoords = new int[50];
-        public static int[] TakenColCoords = new int[50];
+        public static List<Coordinates> TakenCoordinates= new List<Coordinates>();
         public static List<Image> Images = new List<Image>();
         public static string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
-        public static List<Classes.BoatTemplate> boatTemplates = new List<Classes.BoatTemplate>();
+        public static List<BoatTemplate> boatTemplates = new List<Classes.BoatTemplate>();
 
         //Preview Window variables
         public PreviewWindow previewWindow = new Classes.PreviewWindow();
@@ -77,39 +77,41 @@ namespace Battleships_WPF
             Random Ori = new Random();
             int index = Ori.Next(orientations.Length);
             newboat.currentOrientation = orientations[index];
+            int currentrow = row;
+            int currentcol = col;
             if (col == 8 && newboat.currentOrientation == "Horizontal")
             {
                 //Vart får den BoatSize ifrån?
                 if (newboat.BoatSize == 3)
                 {
-                    col -= 2;
+                    currentcol -= 2;
                 }
                 else if (newboat.BoatSize == 2)
                 {
-                    col -= 1;
+                    currentcol -= 1;
                 }
             }
             else if (col == 7 && newboat.BoatSize == 3 && newboat.currentOrientation == "Horizontal")
             {
-                col -= 1;
+                currentcol -= 1;
             }
             if (row == 8 && newboat.currentOrientation == "Vertical")
             {
                 if (newboat.BoatSize == 3)
                 {
-                    row -= 2;
+                    currentrow -= 2;
                 }
                 else if (newboat.BoatSize == 2)
                 {
-                    row -= 1;
+                    currentrow -= 1;
                 }
             }
             else if (row == 7 && newboat.BoatSize == 3 && newboat.currentOrientation == "Vertical")
             {
-                row -= 1;
+                currentrow -= 1;
             }
-            newboat.row_number = row;
-            newboat.column_number = col;
+            newboat.row_number = currentrow;
+            newboat.column_number = currentcol;
             return newboat;
         }
 
@@ -426,6 +428,66 @@ namespace Battleships_WPF
             Canvas.SetTop(ImageCanvas.Children[0], dropposition.Y - 50);
         }
 
+        private bool checkCoordinates(Coordinates cord)
+        {
+            foreach(Coordinates c in TakenCoordinates)
+            {
+                if(c.row == cord.row && c.col == cord.col)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void AIattacks()
+        {
+            
+            while (match.turnid == 1)
+            {
+                Random AIRandomRow = new Random();
+                int targetRow = AIRandomRow.Next(9);
+                Random AIRandomCol = new Random();
+                int targetCol = AIRandomCol.Next(9);
+                while(checkCoordinates(new Coordinates(targetRow, targetCol)))
+                {
+                    Random newRow = new Random();
+                    targetRow = newRow.Next(9);
+                    Random newCol = new Random();
+                    targetCol = newCol.Next(9);
+                }
+                TakenCoordinates.Add(new Coordinates(targetRow, targetCol));
+                if (Attack(MainPlayer, targetRow, targetCol) == true)
+                {
+                    //Var tvungen att byta namn på Image, eftersom BodyImage används redan.
+                    Image AIhitimage = new Image
+                    {
+                        Width = 51,
+                        Height = 51,
+                        Name = "fire",
+                        Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Fire.png", UriKind.RelativeOrAbsolute)),
+                        Stretch = Stretch.Fill
+                    };
+                    Grid.SetColumn(AIhitimage, targetCol);
+                    Grid.SetRow(AIhitimage, targetRow);
+                    watertiles.Children.Add(AIhitimage);
+                }
+                else
+                {
+                    Image AImissimage = new Image
+                    {
+                        Width = 51,
+                        Height = 51,
+                        Name = "miss",
+                        Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Miss.png", UriKind.RelativeOrAbsolute)),
+                        Stretch = Stretch.Fill
+                    };
+                    Grid.SetColumn(AImissimage, targetCol);
+                    Grid.SetRow(AImissimage, targetRow);
+                    watertiles.Children.Add(AImissimage);
+                    match.turnid = 0;
+                }
+            }
+        }
         public void button_Click(object sender, RoutedEventArgs e)
         {
             Button srcButton = e.Source as Button;
@@ -469,50 +531,13 @@ namespace Battleships_WPF
                         Grid.SetColumn(BodyImage, c);
                         Grid.SetRow(BodyImage, r);
                         watertiles2.Children.Add(BodyImage);
-                        ButtonX.Text = $"No ship at the position: {r} col: {c}";
-
-                        /*Om man missar attackerar AI. Finns det bättre sätt att aktivera AI på?
-                        Typ en separat knapp eller nått.
-                        button_click blir världens längsta metod så som jag gjort.
-                        Copy paste från attacksekvensen för spelaren, fast med ändrade
-                        variabelnamn. 
-                        AI väljer sin attack på en slumpad ruta, och kan
-                        attackera samma ruta flera gånger.
-                         */
-                        Random AIRandomRow = new Random();
-                        int targetRow = AIRandomRow.Next(9);
-                        Random AIRandomCol = new Random();
-                        int targetCol = AIRandomCol.Next(9);
-                        if (Attack(MainPlayer, targetRow, targetCol) == true)
-                        {
-                            //Var tvungen att byta namn på Image, eftersom BodyImage används redan.
-                            Image AIhitimage = new Image
-                            {
-                                Width = 51,
-                                Height = 51,
-                                Name = "fire",
-                                Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Fire.png", UriKind.RelativeOrAbsolute)),
-                                Stretch = Stretch.Fill
-                            };
-                            Grid.SetColumn(AIhitimage, targetCol);
-                            Grid.SetRow(AIhitimage, targetRow);
-                            watertiles.Children.Add(AIhitimage);
-                        }
-                        else
-                        {
-                            Image AImissimage = new Image
-                            {
-                                Width = 51,
-                                Height = 51,
-                                Name = "miss",
-                                Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Miss.png", UriKind.RelativeOrAbsolute)),
-                                Stretch = Stretch.Fill
-                            };
-                            Grid.SetColumn(AImissimage, targetCol);
-                            Grid.SetRow(AImissimage, targetRow);
-                            watertiles.Children.Add(AImissimage);
-                        }
+                        ButtonX.Text = $"No ship at the position: row {r} col: {c}";
+                        match.turnid = 1;
                     }
+                    if (match.turnid == 1)
+                        {
+                        AIattacks();
+                        }
                 }
             }
             if (MainPlayer.PlayerBoats == 0)

@@ -42,9 +42,9 @@ namespace Battleships_WPF
             {
                 int count = 0;
                 int count2 = 0;
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 9; i++)
                 {
-                    for (int j = 0; j < 10; j++)
+                    for (int j = 0; j < 9; j++)
                     {
 
                         Button MyControl1 = new Button();
@@ -63,7 +63,7 @@ namespace Battleships_WPF
                             count++;
                         }
                     }
-                    for (int j = 0; j < 10; j++)
+                    for (int k = 0; k < 9; k++)
                     {
 
                         Button MyControl1 = new Button();
@@ -74,9 +74,9 @@ namespace Battleships_WPF
                         MyControl1.Name = "Enemy" + count2.ToString();
                         MyControl1.Click += new RoutedEventHandler(MainWindow.Instance.button_Click);
                         MyControl1.MouseEnter += new MouseEventHandler(MainWindow.Instance.button_Enter);
-                        if (j != 9)
+                        if (k != 9)
                         {
-                            Grid.SetColumn(MyControl1, j);
+                            Grid.SetColumn(MyControl1, k);
                             Grid.SetRow(MyControl1, i);
                             watertiles2.Children.Add(MyControl1);
                             count2++;
@@ -397,6 +397,16 @@ namespace Battleships_WPF
                 {
                     CreateBoatImage(ImageCanvas, boatName: MainWindow.boatLibrary[Classes.PreviewWindow.currentBoatVisualIndex]);
                 }
+            }
+        }
+
+        public class Coordinates
+        {
+            public int row, col;
+            public Coordinates(int row, int col)
+            {
+                this.row = row;
+                this.col = col;
             }
         }
 
