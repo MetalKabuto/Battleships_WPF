@@ -232,7 +232,10 @@ namespace Battleships_WPF
                     //transformBmp
                 };
                 BodyImage.MouseMove += BodyImage_MouseMove;
+                Images.Add(BodyImage);
             }
+
+            float x = 0;
         }
 
         void PopulateBoatTemplates()
