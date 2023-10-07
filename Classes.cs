@@ -53,7 +53,6 @@ namespace Battleships_WPF
                         brush.Stretch = Stretch.Fill;
                         MyControl1.Background = brush;
                         MyControl1.Name = "Player" + count.ToString();
-                        MyControl1.Click += new RoutedEventHandler(MainWindow.Instance.button_Click);
                         MyControl1.MouseEnter += new MouseEventHandler(MainWindow.Instance.button_Enter);
                         if (j != 9)
                         {
@@ -136,7 +135,7 @@ namespace Battleships_WPF
             public string boatPath;
 
             public int size, damagedParts;
-            public bool destroyed;
+            public bool destroyed,painted;
             public List<BoatParts> parts;
 
             public int row_number = -1;
@@ -153,6 +152,7 @@ namespace Battleships_WPF
 
             public Boat(string boatName, int size, int damagedParts=0)
             {
+                this.painted = false;
                 parts = new List<BoatParts>();
                 this.size = size;
                 this.damagedParts = damagedParts;
@@ -163,6 +163,7 @@ namespace Battleships_WPF
             {
                 parts = new List<BoatParts>();
 
+                this.painted = false;
                 this.damagedParts = 0;
                 this.destroyed = false;
 

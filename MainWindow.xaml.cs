@@ -12,10 +12,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using static Battleships_WPF.Classes;
 
 namespace Battleships_WPF
@@ -439,6 +441,55 @@ namespace Battleships_WPF
             }
             return false;
         }
+
+        private void AddDestroyedBoat()
+        {
+            foreach(Boat b in Enemy.boats)
+            {
+                if(b.destroyed == true && b.painted == false)
+                {
+                    TransformedBitmap transformBmp = new TransformedBitmap();
+                    Image boatImage = new Image();
+                    boatImage.Source = new BitmapImage(new Uri(projectDirectory + "\\Images\\Boats\\" + $"{b.boatName}" + ".png"));
+                    if (b.currentOrientation == "Vertical")
+                    {
+                        if (boatImage != null)
+                        {
+                            boatImage.Height = 153;
+                            boatImage.Height /= 3;
+                            boatImage.Height *= b.size;
+                        }
+                        Grid.SetRowSpan(boatImage, b.size);
+                        Grid.SetColumnSpan(boatImage, 1);
+                    }
+                    else if (b.currentOrientation == "Horizontal")
+                    {
+                        if (boatImage != null)
+                        {
+                            boatImage.Width = 153;
+                            boatImage.Width /= 3;
+                            boatImage.Width *= b.size;
+                        }
+                        Grid.SetColumnSpan(boatImage, b.size);
+                        Grid.SetRowSpan(boatImage, 1);
+                        transformBmp.BeginInit();
+                        transformBmp.Source = new BitmapImage(new Uri(projectDirectory + "\\Images\\Boats\\" + $"{b.boatName}" + ".png"));
+                        RotateTransform transform = new RotateTransform(90);
+                        transformBmp.Transform = transform;
+                        transformBmp.EndInit();
+                        boatImage.Source = transformBmp;
+                    }
+                    Grid.SetColumn(boatImage, b.column_number);
+                    Grid.SetRow(boatImage, b.row_number);
+                    watertiles2.Children.Add(boatImage);
+                    b.painted = true;
+                    foreach(BoatParts p in b.parts)
+                    {
+                        AddFire(p.rowPos, p.colPos);
+                    }
+                }
+            }
+        }
         private void AIattacks()
         {
             
@@ -475,10 +526,10 @@ namespace Battleships_WPF
                 {
                     Image AImissimage = new Image
                     {
-                        Width = 51,
-                        Height = 51,
+                        Width = 31,
+                        Height = 31,
                         Name = "miss",
-                        Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Miss.png", UriKind.RelativeOrAbsolute)),
+                        Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Cross.png", UriKind.RelativeOrAbsolute)),
                         Stretch = Stretch.Fill
                     };
                     Grid.SetColumn(AImissimage, targetCol);
@@ -487,6 +538,22 @@ namespace Battleships_WPF
                     match.turnid = 0;
                 }
             }
+        }
+
+        private void AddFire(int row,int col)
+        {
+            Image BodyImage = new Image
+            {
+                Width = 51,
+                Height = 51,
+                Name = "fire",
+                Source = new BitmapImage(new Uri(projectDirectory + "\\Images\\Boats\\Fire.png", UriKind.RelativeOrAbsolute)),
+                Stretch = Stretch.Fill
+            };
+            AddDestroyedBoat();
+            Grid.SetColumn(BodyImage, col);
+            Grid.SetRow(BodyImage, row);
+            watertiles2.Children.Add(BodyImage);
         }
         public void button_Click(object sender, RoutedEventArgs e)
         {
@@ -504,17 +571,7 @@ namespace Battleships_WPF
                     ButtonX.Text = $"row: {r} col: {c}";
                     if (Attack(Enemy, r, c) == true)
                     {
-                        Image BodyImage = new Image
-                        {
-                            Width = 51,
-                            Height = 51,
-                            Name = "fire",
-                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Fire.png", UriKind.RelativeOrAbsolute)),
-                            Stretch = Stretch.Fill
-                        };
-                        Grid.SetColumn(BodyImage, c);
-                        Grid.SetRow(BodyImage, r);
-                        watertiles2.Children.Add(BodyImage);
+                        AddFire(r, c);
                         ButtonX.Text = $"Boat Hit in position row: {r} col: {c}";
                     }
                     //Lade till så att det visas en ikon på rutor man gissat på, men som inte har skepp.
@@ -522,12 +579,13 @@ namespace Battleships_WPF
                     {
                         Image BodyImage = new Image
                         {
-                            Width = 51,
-                            Height = 51,
+                            Width = 31,
+                            Height = 31,
                             Name = "miss",
-                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Miss.png", UriKind.RelativeOrAbsolute)),
+                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Cross.png", UriKind.RelativeOrAbsolute)),
                             Stretch = Stretch.Fill
                         };
+                        BodyImage.Uid = "miss" + r + c;
                         Grid.SetColumn(BodyImage, c);
                         Grid.SetRow(BodyImage, r);
                         watertiles2.Children.Add(BodyImage);
@@ -568,6 +626,20 @@ namespace Battleships_WPF
             match = new Match(-1,0,MainPlayer.boats.Count, Enemy.boats.Count);
             MainPlayer.PlayerBoats = MainPlayer.boats.Count;
             Enemy.PlayerBoats = Enemy.boats.Count;
+            int BoatChecker = 0;
+            foreach(UIElement element in watertiles.Children)
+            {
+                if(element.Uid == "BigBoat" | element.Uid == "MediumBoat"| element.Uid == "LittleBoat")
+                {
+                    BoatChecker += 1;
+                }
+            }
+            if(BoatChecker != 3)
+            {
+                matchStart =false;
+                MousePositionText.Text = $"Place all your boats!\n You only have placed {BoatChecker} boats";
+            }
+            else { MousePositionText.Text = "Your Turn"; }
         }
         private void SpinButton_Click(object sender, RoutedEventArgs e)
         {
