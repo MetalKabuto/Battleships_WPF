@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Battleships_WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="550" Width="1110">
-    <Grid>
+    <Grid Name="MainGrid">
         <Canvas Background="Transparent" Name="TitleCanvas" Height="200" Width="200" VerticalAlignment="Top" HorizontalAlignment="Left"></Canvas>
         <Button Name="TitleButton" Click="TitleButton_Click" Content="Begin Game" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80"/>
         <!--Hittat fontweight https://learn.microsoft.com/en-us/dotnet/api/system.windows.fontweights?view=windowsdesktop-7.0 -->
