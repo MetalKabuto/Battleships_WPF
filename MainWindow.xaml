@@ -19,67 +19,67 @@
         </Border>
         <Border Name="Border1" HorizontalAlignment="Left" VerticalAlignment="Bottom"  BorderBrush="Black" BorderThickness="4" Visibility="Hidden">
             <Grid Name= "watertiles" DragLeave="Drag_Leave" Height="465" Width="450" VerticalAlignment="Bottom" HorizontalAlignment="Left" Drop="GridDrop" AllowDrop="True" Visibility="Hidden">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="10" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
 
-            </Grid.RowDefinitions>
-            <Rectangle  Name="wall0" Grid.Column= "9" Grid.Row="0" Fill="Black"></Rectangle>
-            <Rectangle  Name="wall1" Grid.Column= "9" Grid.Row="1" Fill="Black"></Rectangle>
-            <Rectangle  Name="wall2" Grid.Column= "9" Grid.Row="2" Fill="Black"></Rectangle>
-            <Rectangle  Name="wall3" Grid.Column= "9" Grid.Row="3" Fill="Black"></Rectangle>
-            <Rectangle  Name="wall4" Grid.Column= "9" Grid.Row="4" Fill="Black"></Rectangle>
-            <Rectangle  Name="wall5" Grid.Column= "9" Grid.Row="5" Fill="Black"></Rectangle>
-            <Rectangle  Name="wall6" Grid.Column= "9" Grid.Row="6" Fill="Black"></Rectangle>
-            <Rectangle  Name="wall7" Grid.Column= "9" Grid.Row="7" Fill="Black"></Rectangle>
-            <Rectangle  Name="wall8" Grid.Column= "9" Grid.Row="8" Fill="Black"></Rectangle>
-        </Grid>
+                </Grid.RowDefinitions>
+                <Rectangle  Name="wall0" Grid.Column= "9" Grid.Row="0" Fill="Black"></Rectangle>
+                <Rectangle  Name="wall1" Grid.Column= "9" Grid.Row="1" Fill="Black"></Rectangle>
+                <Rectangle  Name="wall2" Grid.Column= "9" Grid.Row="2" Fill="Black"></Rectangle>
+                <Rectangle  Name="wall3" Grid.Column= "9" Grid.Row="3" Fill="Black"></Rectangle>
+                <Rectangle  Name="wall4" Grid.Column= "9" Grid.Row="4" Fill="Black"></Rectangle>
+                <Rectangle  Name="wall5" Grid.Column= "9" Grid.Row="5" Fill="Black"></Rectangle>
+                <Rectangle  Name="wall6" Grid.Column= "9" Grid.Row="6" Fill="Black"></Rectangle>
+                <Rectangle  Name="wall7" Grid.Column= "9" Grid.Row="7" Fill="Black"></Rectangle>
+                <Rectangle  Name="wall8" Grid.Column= "9" Grid.Row="8" Fill="Black"></Rectangle>
+            </Grid>
         </Border>
         <Border Name="Border2" HorizontalAlignment="Left" VerticalAlignment="Bottom"  BorderBrush="Black" BorderThickness="4" Visibility="Hidden">
-        <Grid Name="watertiles2" Height="465" Width="440" Margin="450,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Visibility="Hidden">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
+            <Grid Name="watertiles2" Height="465" Width="440" Margin="450,0,0,0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Visibility="Hidden">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
 
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-        </Grid>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+            </Grid>
         </Border>
         <!--Var tvungen att lägga till ett namn för att kunna gömma/visa den -->
         <Border Name="Border3" BorderBrush="Black" BorderThickness="6" Visibility="Hidden">
@@ -95,6 +95,8 @@
                 <Button BorderBrush="Black" BorderThickness="2" Content="Next" Click="NextButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-5,0,-15,40" Height="35" Width="70" Background="Red" Grid.Row="1"/>
                 <Button BorderBrush="Black" BorderThickness="2" Content="Start Match" Click="StartMatch_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-75,0,-15,0" Height="35" Width="70" Background="Green" Grid.Row="1"/>
                 <Button BorderBrush="Black" BorderThickness="2" Content="Spin ->" Click="SpinButton_Click" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="-5,0,-15,0" Height="35" Width="70" Background="Teal" Grid.Row="1"/>
+                <Label Name="VolumeLabel" Content="Volume" VerticalAlignment="Bottom" Margin="-100,0,100,80" Grid.Row="1" Height="25"></Label>
+                <Slider Name="VolumeSlider" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,80" Grid.Row="1" Height="20" Width="65" ValueChanged="VolumeSlider_ValueChanged" Value="10"></Slider>
                 <!--Image MouseMove="BoatImage_MouseMove" Name="BoatImage" Margin="-80,184,60,134" Stretch="Fill"/> -->
                 <!--Flyttade canvasen med båtar inuti ButtonGrid för att kunna gömma den på 'huvudmenyn'.  -->
                 <Canvas Background="LightGray" Name="ImageCanvas" Height="290" Width="190" VerticalAlignment="Top" HorizontalAlignment="Right" AllowDrop="True" Drop="ImageDrop" Margin="15,80,10,0" DragLeave="Drag_Leave"></Canvas>

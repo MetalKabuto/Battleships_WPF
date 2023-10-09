@@ -36,6 +36,7 @@ namespace Battleships_WPF
         public Match match;
 
         private MediaPlayer mediaPlayer;
+        private double masterVolume;
 
         public static MainWindow Instance { get; private set; }
 
@@ -76,15 +77,9 @@ namespace Battleships_WPF
         public void PlaySound(string filename, int volume)
         {
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.Volume = volume / 100.0f;
+            mediaPlayer.Volume = (volume / 100.0f) * masterVolume;
             mediaPlayer.Open(new Uri(filename));
             mediaPlayer.Play();
-        }
-
-        public void SetVolume(int volume)
-        {
-            // MediaPlayer volume is a float value between 0 and 1.
-            mediaPlayer.Volume = volume / 100.0f;
         }
 
         public Boat Randomize_Boat(Boat boat)
@@ -753,6 +748,15 @@ namespace Battleships_WPF
             {
                 //Gör inget
             }
+        }
+
+        private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            double volumeValue = (e.NewValue / 10.0);
+            int volumeValuePercentage = (int)(volumeValue * 100.0);
+
+            VolumeLabel.Content = $"Volume ({volumeValuePercentage}%)";
+            masterVolume = volumeValue;
         }
     }
 }
