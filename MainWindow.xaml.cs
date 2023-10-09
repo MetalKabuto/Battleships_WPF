@@ -632,6 +632,7 @@ namespace Battleships_WPF
                         {
                             AddFire(r, c);
                             ButtonX.Text = $"Boat Hit in position row: {r} col: {c}";
+                            PlaySound(projectDirectory + "\\Sounds\\hitsound1.wav", 3);
                         }
                         //Lade till så att det visas en ikon på rutor man gissat på, men som inte har skepp.
                         else
@@ -649,6 +650,7 @@ namespace Battleships_WPF
                             Grid.SetRow(BodyImage, r);
                             watertiles2.Children.Add(BodyImage);
                             ButtonX.Text = $"No ship at the position: row {r} col: {c}";
+                            PlaySound(projectDirectory + "\\Sounds\\watersplash.wav", 15);
                             match.turnid = 1;
                         }
                         if (match.turnid == 1)
