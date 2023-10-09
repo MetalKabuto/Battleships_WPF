@@ -8,7 +8,7 @@
         Title="MainWindow" Height="550" Width="1110">
     <Grid>
         <Canvas Background="Transparent" Name="TitleCanvas" Height="200" Width="200" VerticalAlignment="Top" HorizontalAlignment="Left"></Canvas>
-        <Button Name="TitleButton" Click="TitleButton_Click" Content="Begin Game" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80"/>
+        <Button Name="TitleButton" Click="TitleButton_Click" HorizontalAlignment="Center" VerticalAlignment="Top" Width="80" Height="55" Margin="0,224,0,0" />
         <!--Hittat fontweight https://learn.microsoft.com/en-us/dotnet/api/system.windows.fontweights?view=windowsdesktop-7.0 -->
         <!-- foreground här https://wpf-tutorial.com/ms/6/xaml/basic-xaml/ -->
         <Border Name="Border4" Background="Black" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Width="450" Height="50"  BorderBrush="Black" BorderThickness="6" Visibility="Hidden">
@@ -100,7 +100,8 @@
                 <Canvas Background="LightGray" Name="ImageCanvas" Height="290" Width="190" VerticalAlignment="Top" HorizontalAlignment="Right" AllowDrop="True" Drop="ImageDrop" Margin="15,80,10,0" DragLeave="Drag_Leave"></Canvas>
             </Grid>
         </Border>
+        <Canvas Name="ResultCanvas" Height="500" Width="500" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed"></Canvas>
         <!--Satte den längst ner så att den hamnar 'ovanpå' de andra grejerna. -->
-        <Button Name="RestartButton" Click="RestartButton_Click" Content="Restart Game" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80" Visibility="Collapsed"/>
+        <Button Name="RestartButton" Click="RestartButton_Click" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80" Visibility="Collapsed"/>
     </Grid>
 </Window>

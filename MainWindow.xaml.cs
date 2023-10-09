@@ -69,6 +69,7 @@ namespace Battleships_WPF
 
             previewWindow.CreateBoatImage(ImageCanvas);
             currentMatch.CreateTitleImage(TitleCanvas);
+            currentMatch.CreateButtonImage(TitleButton);
             //AI placerar skepp när man startar programmet
             AI_Randomize();
         }
@@ -637,7 +638,7 @@ namespace Battleships_WPF
                     ButtonX.Text = $"row: {r} col: {c}";
                     if (checkCoordinates(new Coordinates(r, c),PlayerTakenCoordinates))
                     {
-                        ButtonX.Text = "already guessed at this locaiton";
+                        ButtonX.Text = "Already attacked this location!";
                     }
                     else
                     {
@@ -675,17 +676,24 @@ namespace Battleships_WPF
                 }
             }
             //Lade till så att restartknappen visas när matchen är över
+            //Createbuttonimage körs i båda satserna, eftersom bilden som visas inte är samma
             if (MainPlayer.PlayerBoats == 0)
             {
                 match.winner = 1;
                 ButtonX.Text = "Enemy Won!!";
+                currentMatch.CreateButtonImage(RestartButton);
+                CreateResultImage(ResultCanvas);
                 RestartButton.Visibility = Visibility.Visible;
+                ResultCanvas.Visibility = Visibility.Visible;
             }
             else if (Enemy.PlayerBoats == 0)
             {
                 match.winner = 0;
                 ButtonX.Text = "You won!!!";
+                currentMatch.CreateButtonImage(RestartButton);
+                CreateResultImage(ResultCanvas);
                 RestartButton.Visibility = Visibility.Visible;
+                ResultCanvas.Visibility = Visibility.Visible;
             }
         }
 
@@ -752,6 +760,24 @@ namespace Battleships_WPF
             else
             {
                 //Gör inget
+            }
+        }
+        //Var tvungen att sätta den i MainWindow.cs för att komma åt match.winner och ändra vilken bild som visas om man vinner eller förlorar.
+        public void CreateResultImage(Canvas canvas)
+        {
+            var brush = new ImageBrush();
+            brush.Stretch = Stretch.Fill;
+            //0 = vinst, 1 = förlust
+            if (match.winner == 0)
+            {
+                //FIX: Ändra till riktiga bilder.
+                brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\titlescreenpicture.jpeg"));
+                canvas.Background = brush;
+            }
+            else if (match.winner == 1)
+            {
+                brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\istockphoto-501133891-612x612.jpg"));
+                canvas.Background = brush;
             }
         }
     }

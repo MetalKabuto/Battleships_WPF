@@ -38,6 +38,8 @@ namespace Battleships_WPF
                 players.Add(player.playerID);
             }
 
+
+
             public void CreateMap(Grid watertiles, Grid watertiles2)
             {
                 int count = 0;
@@ -100,6 +102,22 @@ namespace Battleships_WPF
                     Source = bmpImage
                 };
                 TitleCanvas.Children.Add(BodyImage);
+            }
+            public void CreateButtonImage(Button testbutton)
+            {
+                var brush = new ImageBrush();
+                brush.Stretch = Stretch.Fill;
+                if (testbutton.Name == "TitleButton")
+                {
+                    //FIX: Sätt riktiga bilder
+                    brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\titlescreenpicture.jpeg"));
+                    testbutton.Background = brush;
+                }
+                else if (testbutton.Name == "RestartButton")
+                {
+                    brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\istockphoto-501133891-612x612.jpg"));
+                    testbutton.Background = brush;
+                }
             }
         }
 
