@@ -21,7 +21,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using static Battleships_WPF.Classes;
-using System.Windows.Media;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -31,200 +30,62 @@ namespace Battleships_WPF
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {
-        public Player MainPlayer = new Classes.Player(0, 3);
-        public Player Enemy = new Classes.Player(1, 3);
-        public Match match;
-
+    {   
+        //Players
+        public static Player MainPlayer = new Player(0, 3);
+        public static Player Enemy = new Player(1, 3);
+        public static Match match;
+        static bool matchStart = false;
+        
+        //Sound 
         private MediaPlayer mediaPlayer;
         private double masterVolume;
 
+        //Controls
         public static MainWindow Instance { get; private set; }
-
         public static string MouseHover;
 
+        //Player used tiles
         public static List<Coordinates> PlayerTakenCoordinates = new List<Coordinates>();
         public static List<Coordinates> TakenCoordinates= new List<Coordinates>();
+
+        //Interface Variables
         public static List<Image> Images = new List<Image>();
         public static string[] boatLibrary = new string[] { "HugeBoat", "BigBoat", "MediumBoat1", "MediumBoat2", "LittleBoat" };
         public static List<BoatTemplate> boatTemplates = new List<Classes.BoatTemplate>();
 
         //Preview Window variables
-        public PreviewWindow previewWindow = new Classes.PreviewWindow();
+        public PreviewWindow previewWindow = new PreviewWindow();
         public Boat currentPreviewBoat;
         public Match currentMatch;
-
         public static string projectDirectory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+
         public MainWindow()
         {
             InitializeComponent();
 
             Instance = this;
-            PopulateBoatTemplates();
+            PreviewWindow.PopulateTemplates();
 
-            currentPreviewBoat = new Classes.Boat(boatTemplates[0].boatName, boatTemplates[0].boatSize);
+            currentPreviewBoat = new Boat(boatTemplates[0].boatName, boatTemplates[0].boatSize);
 
             LoadImages();   //Fill Images list with images, of the elements in Boat Library
 
-            currentMatch = new Classes.Match(-1, -1, -1, -1);
+            currentMatch = new Match(-1, -1, -1, -1);
             currentMatch.CreateMap(watertiles, watertiles2);
 
             previewWindow.CreateBoatImage(ImageCanvas);
             currentMatch.CreateTitleImage(TitleCanvas);
             currentMatch.CreateButtonImage(TitleButton);
             //AI placerar skepp när man startar programmet
-            AI_Randomize();
+            Match.AI_Randomize();
         }
-
         public void PlaySound(string filename, int volume)
         {
             mediaPlayer = new MediaPlayer();
             mediaPlayer.Volume = (volume / 100.0f) * masterVolume;
             mediaPlayer.Open(new Uri(filename));
             mediaPlayer.Play();
-        }
-
-        public Boat Randomize_Boat(Boat boat)
-        {
-            //Horizontal genererar från vänster till höger, vertical uppifrån och ner
-            string[] orientations = new string[] { "Horizontal", "Vertical" };
-
-            Classes.Boat newboat = boat;
-            Random randomRow = new Random();
-            int row = randomRow.Next(9);
-            Random randomCol = new Random();
-            int col = randomCol.Next(9);
-            Random Ori = new Random();
-            int index = Ori.Next(orientations.Length);
-            newboat.currentOrientation = orientations[index];
-            int currentrow = row;
-            int currentcol = col;
-            if (col == 8 && newboat.currentOrientation == "Horizontal")
-            {
-                //Vart får den BoatSize ifrån?
-                if (newboat.BoatSize == 4)
-                {
-                    currentcol -= 3;
-                }
-                else if (newboat.BoatSize == 3)
-                {
-                    currentcol -= 2;
-                }
-                else if (newboat.BoatSize == 2)
-                {
-                    currentcol -= 1;
-                }
-            }
-            else if(col == 7 && newboat.BoatSize == 4 && newboat.currentOrientation == "Horizontal")
-            {
-                currentcol -= 2;
-            }
-            else if (col == 6 && newboat.BoatSize == 4 && newboat.currentOrientation == "Horizontal")
-            {
-                currentcol -= 1;
-            }
-            else if (col == 7 && newboat.BoatSize == 3 && newboat.currentOrientation == "Horizontal")
-            {
-                currentcol -= 1;
-            }
-            if (row == 8 && newboat.currentOrientation == "Vertical")
-            {
-                if (newboat.BoatSize == 4)
-                {
-                    currentrow -= 3;
-                }
-                else if (newboat.BoatSize == 3)
-                {
-                    currentrow -= 2;
-                }
-                else if (newboat.BoatSize == 2)
-                {
-                    currentrow -= 1;
-                }
-            }
-            else if (row == 7 && newboat.BoatSize == 4 && newboat.currentOrientation == "Vertical")
-            {
-                currentrow -= 2;
-            }
-            else if (row == 6 && newboat.BoatSize == 4 && newboat.currentOrientation == "Vertical")
-            {
-                currentrow -= 1;
-            }
-            else if (row == 7 && newboat.BoatSize == 3 && newboat.currentOrientation == "Vertical")
-            {
-                currentrow -= 1;
-            }
-            newboat.row_number = currentrow;
-            newboat.column_number = currentcol;
-            return newboat;
-        }
-
-        private void AI_Randomize()
-        {
-            int i = 0;
-            foreach (Boat testboat in Enemy.boats.ToList())
-            {
-                Enemy.boats[i] = Randomize_Boat(Enemy.boats[i]);
-                SetBoatPartPositions(Enemy.boats[i]);
-                while (CheckOverlappingBoats(Enemy.boats[i]) == true)
-                {
-                    Enemy.boats[i] = Randomize_Boat(Enemy.boats[i]);
-                    SetBoatPartPositions(Enemy.boats[i]);
-                }
-                i += 1;
-            }
-        }
-
-        private bool CheckOverlappingBoats(Boat boat)
-        {
-            foreach(BoatParts part in boat.parts)
-            {
-                foreach(Boat b in Enemy.boats)
-                {
-                    if(boat.boatName != b.boatName)
-                    {
-                        foreach(BoatParts p in b.parts)
-                        {
-                            if(p.rowPos == part.rowPos && p.colPos  == part.colPos)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-        private Boat addBoatParts(Boat boat)
-        {
-            for (int i = 0;i < boat.BoatSize;i++)
-            {
-                boat.parts.Add(new Classes.BoatParts(0, 0));
-            }
-            return boat;
-        }
-
-        private Boat SetBoatPartPositions(Boat boat)
-        {
-            int originalRow = boat.row_number;
-            int originalCol = boat.column_number;
-            foreach(Classes.BoatParts boatPart in boat.parts)
-            {
-                if(boat.currentOrientation == "Horizontal")
-                {
-                    boatPart.rowPos = originalRow;
-                    boatPart.colPos = originalCol;
-                    originalCol += 1;
-                }
-                else if(boat.currentOrientation == "Vertical")
-                {
-                    boatPart.rowPos = originalRow;
-                    boatPart.colPos = originalCol;
-                    originalRow += 1;
-                }
-            }
-            
-            return boat;
         }
         private void RestartProgram()
         {
@@ -239,6 +100,7 @@ namespace Battleships_WPF
             //Gömmer huvudmenyn när man klickar på 'Begin Game'
             TitleCanvas.Visibility = Visibility.Collapsed;
             TitleButton.Visibility = Visibility.Collapsed;
+            TitleText.Visibility = Visibility.Collapsed;
             watertiles.Visibility = Visibility.Visible;
             watertiles2.Visibility = Visibility.Visible;
             ButtonGrid.Visibility = Visibility.Visible;
@@ -259,7 +121,7 @@ namespace Battleships_WPF
             //FIXME: Move to library class when we have one...
 
             
-            Classes.Boat boat = new Classes.Boat(GetBoatTemplate(currentPreviewBoat.boatName));
+            Boat boat = new Boat(Boat.GetBoatTemplate(currentPreviewBoat.boatName));
             
 
             for(int i = 0; i < boatLibrary.Length; i++)
@@ -291,117 +153,26 @@ namespace Battleships_WPF
                     Height = 153,
                     Name = boatName,
                     Source = transformBmp
-                    //new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
-                    //transformBmp
                 };
                 BodyImage.MouseMove += BodyImage_MouseMove;
                 Images.Add(BodyImage);
             }
-
-            float x = 0;
         }
-
-        void PopulateBoatTemplates()
-        {
-            for (int i = 0; i < boatLibrary.Length; i++)
-            {
-                Classes.BoatTemplate boatTemplate = new Classes.BoatTemplate() { boatName = boatLibrary[i] };
-
-                if(boatTemplate.boatName == "HugeBoat")
-                {
-                    boatTemplate.boatSize = 4;
-                }
-                else if (boatTemplate.boatName == "BigBoat")
-                {
-                    boatTemplate.boatSize = 3;
-                }
-                else if (boatTemplate.boatName == "MediumBoat1")
-                {
-                    boatTemplate.boatSize = 2;
-                }
-                else if (boatTemplate.boatName == "MediumBoat2")
-                {
-                    boatTemplate.boatSize = 2;
-                }
-                else if (boatTemplate.boatName == "LittleBoat")
-                {
-                    boatTemplate.boatSize = 1;
-                }
-
-                TransformedBitmap transformBmp = new TransformedBitmap();
-                BitmapImage bmpImage = new BitmapImage();
-
-                bmpImage.BeginInit();
-
-                string boatName = boatLibrary[i];
-
-                bmpImage.UriSource = new Uri(projectDirectory + $"\\Images\\Boats\\{boatName}.png", UriKind.RelativeOrAbsolute);
-
-                bmpImage.EndInit();
-
-                transformBmp.BeginInit();
-
-                transformBmp.Source = bmpImage;
-
-                RotateTransform transform = new RotateTransform(0);
-
-                transformBmp.Transform = transform;
-
-                transformBmp.EndInit();
-
-                Image BodyImage = new Image
-                {
-                    Width = 51,
-                    Height = 153,
-                    Name = boatName,
-                    Source = transformBmp
-                    //new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
-                    //transformBmp
-                };
-
-                boatTemplate.boatImage = BodyImage;
-                MainPlayer.boats.Add(addBoatParts(new Classes.Boat(boatTemplate)));
-                Enemy.boats.Add(addBoatParts(new Classes.Boat(boatTemplate)));
-                boatTemplates.Add(boatTemplate);
-            }
-        }
-
-        public Classes.BoatTemplate GetBoatTemplate(string boatName)
-        {
-            Classes.BoatTemplate boatTemplate = new Classes.BoatTemplate();
-
-            foreach (var template in boatTemplates)
-            {
-                if(template.boatName == boatName)
-                {
-                    boatTemplate = template;
-                }
-            }
-
-            return boatTemplate;
-        }
-
         public void CreateBoatImage(int rotationValue=0, string boatName="BigBoat")
         {
             previewWindow.CreateBoatImage(ImageCanvas, rotationValue, boatName);
         }
-
         private void GridDrop(object sender, DragEventArgs e)
         {
             object data = e.Data.GetData(DataFormats.Serializable);
             if (data is UIElement element)
             {
-                element.Uid = Images[Classes.PreviewWindow.currentBoatVisualIndex].Name;
+                element.Uid = Images[PreviewWindow.currentBoatVisualIndex].Name;
                 var Pos = (UIElement)e.Source;
                 int c = Grid.GetColumn(Pos);
                 int r = Grid.GetRow(Pos);
-                Grid.SetColumn(element, c);
-                Grid.SetRow(element, r);
-
-                Image image = (Image)data;
-
                 int boatSize = currentPreviewBoat.BoatSize;
-
+                Boat.CheckBorders(currentPreviewBoat,ref r,ref c);
                 if (currentPreviewBoat.currentOrientation == "Vertical")
                 {
                     Image boatImage = data as Image;
@@ -411,7 +182,7 @@ namespace Battleships_WPF
                         boatImage.Height /= 3;
                         boatImage.Height *= boatSize;
                     }
-                    MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex].currentOrientation = "Vertical";
+                    MainPlayer.boats[PreviewWindow.currentBoatVisualIndex].currentOrientation = "Vertical";
                     Grid.SetRowSpan(element, boatSize);
                     Grid.SetColumnSpan(element, 1);
                 }
@@ -440,11 +211,17 @@ namespace Battleships_WPF
                 {
                     watertiles.Children.Remove(checker);
                 }
-                MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex].column_number = c;
-                MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex].row_number = r;
-                MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex] = SetBoatPartPositions(MainPlayer.boats[Classes.PreviewWindow.currentBoatVisualIndex]);
+                Grid.SetColumn(element, c);
+                Grid.SetRow(element, r);
+                MainPlayer.boats[PreviewWindow.currentBoatVisualIndex].column_number = c;
+                MainPlayer.boats[PreviewWindow.currentBoatVisualIndex].row_number = r;
+                MainPlayer.boats[PreviewWindow.currentBoatVisualIndex] = Boat.SetBoatPartPositions(MainPlayer.boats[PreviewWindow.currentBoatVisualIndex]);
                 watertiles.Children.Add(element);
-
+                if (Boat.CheckOverlappingBoats(MainPlayer.boats[PreviewWindow.currentBoatVisualIndex], MainPlayer))
+                {
+                    watertiles.Children.Remove(element);
+                    ButtonX.Text = "The boat is overlapping another boat place it properly";
+                }
             }
         }
         private void Drag_Leave(object sender, DragEventArgs e)
@@ -468,7 +245,6 @@ namespace Battleships_WPF
             }
 
         }
-
         public static void BodyImage_MouseMove(object sender, MouseEventArgs e)
         {
             //Det går inte att klicka på skeppen när matchen har börjat.
@@ -487,12 +263,18 @@ namespace Battleships_WPF
         }
         private void ImageDrop(object sender, DragEventArgs e)
         {
-            Point dropposition = e.GetPosition(ImageCanvas);
-            Canvas.SetLeft(ImageCanvas.Children[0], dropposition.X - 25);
-            Canvas.SetTop(ImageCanvas.Children[0], dropposition.Y - 50);
+            try
+            {
+                Point dropposition = e.GetPosition(ImageCanvas);
+                Canvas.SetLeft(ImageCanvas.Children[0], dropposition.X - 25);
+                Canvas.SetTop(ImageCanvas.Children[0], dropposition.Y - 50);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                ButtonX.Text = "Cant place boats outside player bounds";
+            }
         }
-
-        private bool checkCoordinates(Coordinates cord,List<Coordinates> TakenCoordinates)
+        public static bool checkCoordinates(Coordinates cord,List<Coordinates> TakenCoordinates)
         {
             foreach(Coordinates c in TakenCoordinates)
             {
@@ -503,124 +285,10 @@ namespace Battleships_WPF
             }
             return false;
         }
-
-        private void AddDestroyedBoat()
-        {
-            foreach(Boat b in Enemy.boats)
-            {
-                if(b.destroyed == true && b.painted == false)
-                {
-                    TransformedBitmap transformBmp = new TransformedBitmap();
-                    Image boatImage = new Image();
-                    boatImage.Source = new BitmapImage(new Uri(projectDirectory + "\\Images\\Boats\\" + $"{b.boatName}" + ".png"));
-                    if (b.currentOrientation == "Vertical")
-                    {
-                        if (boatImage != null)
-                        {
-                            boatImage.Height = 153;
-                            boatImage.Height /= 3;
-                            boatImage.Height *= b.size;
-                        }
-                        Grid.SetRowSpan(boatImage, b.size);
-                        Grid.SetColumnSpan(boatImage, 1);
-                    }
-                    else if (b.currentOrientation == "Horizontal")
-                    {
-                        if (boatImage != null)
-                        {
-                            boatImage.Width = 153;
-                            boatImage.Width /= 3;
-                            boatImage.Width *= b.size;
-                        }
-                        Grid.SetColumnSpan(boatImage, b.size);
-                        Grid.SetRowSpan(boatImage, 1);
-                        transformBmp.BeginInit();
-                        transformBmp.Source = new BitmapImage(new Uri(projectDirectory + "\\Images\\Boats\\" + $"{b.boatName}" + ".png"));
-                        RotateTransform transform = new RotateTransform(90);
-                        transformBmp.Transform = transform;
-                        transformBmp.EndInit();
-                        boatImage.Source = transformBmp;
-                    }
-                    Grid.SetColumn(boatImage, b.column_number);
-                    Grid.SetRow(boatImage, b.row_number);
-                    watertiles2.Children.Add(boatImage);
-                    b.painted = true;
-                    foreach(BoatParts p in b.parts)
-                    {
-                        AddFire(p.rowPos, p.colPos);
-                    }
-                }
-            }
-        }
-        private void AIattacks()
-        {
-            while (match.turnid == 1)
-            {
-                Random AIRandomRow = new Random();
-                int targetRow = AIRandomRow.Next(9);
-                Random AIRandomCol = new Random();
-                int targetCol = AIRandomCol.Next(9);
-                while(checkCoordinates(new Coordinates(targetRow, targetCol),TakenCoordinates))
-                {
-                    Random newRow = new Random();
-                    targetRow = newRow.Next(9);
-                    Random newCol = new Random();
-                    targetCol = newCol.Next(9);
-                }
-                TakenCoordinates.Add(new Coordinates(targetRow, targetCol));
-                if (Attack(MainPlayer, targetRow, targetCol) == true)
-                {
-                    //Var tvungen att byta namn på Image, eftersom BodyImage används redan.
-                    Image AIhitimage = new Image
-                    {
-                        Width = 51,
-                        Height = 51,
-                        Name = "fire",
-                        Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Fire.png", UriKind.RelativeOrAbsolute)),
-                        Stretch = Stretch.Fill
-                    };
-                    Grid.SetColumn(AIhitimage, targetCol);
-                    Grid.SetRow(AIhitimage, targetRow);
-                    watertiles.Children.Add(AIhitimage);
-                }
-                else
-                {
-                    Image AImissimage = new Image
-                    {
-                        Width = 31,
-                        Height = 31,
-                        Name = "miss",
-                        Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Cross.png", UriKind.RelativeOrAbsolute)),
-                        Stretch = Stretch.Fill
-                    };
-                    Grid.SetColumn(AImissimage, targetCol);
-                    Grid.SetRow(AImissimage, targetRow);
-                    watertiles.Children.Add(AImissimage);
-                    match.turnid = 0;
-                }
-            }
-        }
-
-        private void AddFire(int row,int col)
-        {
-            Image BodyImage = new Image
-            {
-                Width = 51,
-                Height = 51,
-                Name = "fire",
-                Source = new BitmapImage(new Uri(projectDirectory + "\\Images\\Boats\\Fire.png", UriKind.RelativeOrAbsolute)),
-                Stretch = Stretch.Fill
-            };
-            AddDestroyedBoat();
-            Grid.SetColumn(BodyImage, col);
-            Grid.SetRow(BodyImage, row);
-            watertiles2.Children.Add(BodyImage);
-        }
         public void button_Click(object sender, RoutedEventArgs e)
         {
             Button srcButton = e.Source as Button;
             string buttonpressed = srcButton.Name;
-            ButtonX.Text = "text";
             if (matchStart == true && match.winner != 0 && match.winner != 1)
             {
                 //Tror man kan ta bort turnid
@@ -640,32 +308,21 @@ namespace Battleships_WPF
                         PlayerTakenCoordinates.Add(new Coordinates(r, c));
                         if (Attack(Enemy, r, c) == true)
                         {
-                            AddFire(r, c);
+                            Match.AddFire(r, c,watertiles2);
                             ButtonX.Text = $"Boat Hit in position row: {r} col: {c}";
                             PlaySound(projectDirectory + "\\Sounds\\hitsound1.wav", 3);
                         }
                         //Lade till så att det visas en ikon på rutor man gissat på, men som inte har skepp.
                         else
                         {
-                            Image BodyImage = new Image
-                            {
-                                Width = 31,
-                                Height = 31,
-                                Name = "miss",
-                                Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Cross.png", UriKind.RelativeOrAbsolute)),
-                                Stretch = Stretch.Fill
-                            };
-                            BodyImage.Uid = "miss" + r + c;
-                            Grid.SetColumn(BodyImage, c);
-                            Grid.SetRow(BodyImage, r);
-                            watertiles2.Children.Add(BodyImage);
+                            Match.AddMiss(c, r,watertiles2);
                             ButtonX.Text = $"No ship at the position: row {r} col: {c}";
                             PlaySound(projectDirectory + "\\Sounds\\watersplash.wav", 15);
                             match.turnid = 1;
                         }
                         if (match.turnid == 1)
                         {
-                            AIattacks();
+                            Player.AIattacks(watertiles);
                         }
                     }
                 }
@@ -675,33 +332,36 @@ namespace Battleships_WPF
             if (MainPlayer.PlayerBoats == 0)
             {
                 match.winner = 1;
-                ButtonX.Text = "Enemy Won!!";
-                currentMatch.CreateButtonImage(RestartButton);
-                CreateResultImage(ResultCanvas);
-                RestartButton.Visibility = Visibility.Visible;
-                ResultCanvas.Visibility = Visibility.Visible;
+                EndScreen();
             }
             else if (Enemy.PlayerBoats == 0)
             {
                 match.winner = 0;
-                ButtonX.Text = "You won!!!";
-                currentMatch.CreateButtonImage(RestartButton);
-                CreateResultImage(ResultCanvas);
-                RestartButton.Visibility = Visibility.Visible;
-                ResultCanvas.Visibility = Visibility.Visible;
+                EndScreen();
             }
         }
-
+        public void EndScreen()
+        {
+                currentMatch.CreateButtonImage(RestartButton);
+                Match.CreateResultImage(ResultCanvas);
+                RestartButton.Visibility = Visibility.Visible;
+                ResultCanvas.Visibility = Visibility.Visible;
+                if(match.winner == 0)
+            {
+                Match.WinnerImage(Winner,"Win.png");
+            }
+            else
+            {
+                Match.WinnerImage(Winner, "Lose.png");
+            }
+                Winner.Visibility = Visibility.Visible;
+        }
         public void button_Enter(object sender, MouseEventArgs e)
         {
             Button srcButton = e.Source as Button;
             string buttonHover = srcButton.Name;
-            //MousePositionText.Text = $"MouseOver : {buttonHover}";
             MouseHover = buttonHover;
         }
-        //Används för att 'stänga av' de andra knapparna när man tryckt match start.
-        //Var tvungen att göra den static för att det skulle funka med 'BodyImage_MouseMove', eftersom den också är static.
-        static bool matchStart = false;
         private void StartMatch_Click(object sender, RoutedEventArgs e)
         {
             matchStart = true;
@@ -733,7 +393,6 @@ namespace Battleships_WPF
                 //Gör inget
             }
         }
-
         private void NextButton_Click(object sender, RoutedEventArgs e)
         {
             if (matchStart == false)
@@ -745,7 +404,6 @@ namespace Battleships_WPF
                 //Gör inget
             }
         }
-
         private void PreviousButton_Click(object sender, RoutedEventArgs e)
         {
             if (matchStart == false)
@@ -757,7 +415,6 @@ namespace Battleships_WPF
                 //Gör inget
             }
         }
-
         private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             double volumeValue = (e.NewValue / 10.0);
@@ -765,24 +422,6 @@ namespace Battleships_WPF
 
             VolumeLabel.Content = $"Volume ({volumeValuePercentage}%)";
             masterVolume = volumeValue;
-        }
-        //Var tvungen att sätta den i MainWindow.cs för att komma åt match.winner och ändra vilken bild som visas om man vinner eller förlorar.
-        public void CreateResultImage(Canvas canvas)
-        {
-            var brush = new ImageBrush();
-            brush.Stretch = Stretch.Fill;
-            //0 = vinst, 1 = förlust
-            if (match.winner == 0)
-            {
-                //FIX: Ändra till riktiga bilder.
-                brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\titlescreenpicture.jpeg"));
-                canvas.Background = brush;
-            }
-            else if (match.winner == 1)
-            {
-                brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\istockphoto-501133891-612x612.jpg"));
-                canvas.Background = brush;
-            }
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Battleships_WPF
             public int winner, turnid, playerBoats, enemyBoats;
             public Match(int winner, int turnid, int playerBoats, int enemyBoats)
             {
-                this.players = new List<int>();
+                players = new List<int>();
                 this.winner = winner;
                 this.turnid = turnid;
                 this.playerBoats = playerBoats;
@@ -37,9 +37,6 @@ namespace Battleships_WPF
             {
                 players.Add(player.playerID);
             }
-
-
-
             public void CreateMap(Grid watertiles, Grid watertiles2)
             {
                 int count = 0;
@@ -87,10 +84,8 @@ namespace Battleships_WPF
 
                 }
             }
-
             public void CreateTitleImage(Canvas TitleCanvas)
             {
-                TransformedBitmap transformBmp = new TransformedBitmap();
                 BitmapImage bmpImage = new BitmapImage();
                 bmpImage.BeginInit();
                 bmpImage.UriSource = new Uri(MainWindow.projectDirectory + $"\\Images\\titlescreenpicture.jpeg", UriKind.RelativeOrAbsolute);
@@ -98,9 +93,10 @@ namespace Battleships_WPF
                 Image BodyImage = new Image
                 {
                     Width = 1100,
-                    Height = 500,
+                    Height = 550,
                     Source = bmpImage
                 };
+                BodyImage.Stretch = Stretch.Fill;
                 TitleCanvas.Children.Add(BodyImage);
             }
             public void CreateButtonImage(Button testbutton)
@@ -110,15 +106,142 @@ namespace Battleships_WPF
                 if (testbutton.Name == "TitleButton")
                 {
                     //FIX: Sätt riktiga bilder
-                    brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\titlescreenpicture.jpeg"));
+                    brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Start.png"));
                     testbutton.Background = brush;
                 }
-                else if (testbutton.Name == "RestartButton")
+                if (testbutton.Name == "RestartButton")
                 {
-                    brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\istockphoto-501133891-612x612.jpg"));
+                    brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Reset.png"));
                     testbutton.Background = brush;
                 }
             }
+            public static void AddFire(int row, int col, Grid grid)
+            {
+                Image BodyImage = new Image
+                {
+                    Width = 51,
+                    Height = 51,
+                    Name = "fire",
+                    Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Fire.png", UriKind.RelativeOrAbsolute)),
+                    Stretch = Stretch.Fill
+                };
+                AddDestroyedBoat(grid);
+                Grid.SetColumn(BodyImage, col);
+                Grid.SetRow(BodyImage, row);
+                grid.Children.Add(BodyImage);
+            }
+            public static void AddMiss(int c, int r, Grid grid)
+            {
+                Image BodyImage = new Image
+                {
+                    Width = 31,
+                    Height = 31,
+                    Name = "miss",
+                    Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Cross.png", UriKind.RelativeOrAbsolute)),
+                    Stretch = Stretch.Fill
+                };
+                BodyImage.Uid = "miss" + r + c;
+                Grid.SetColumn(BodyImage, c);
+                Grid.SetRow(BodyImage, r);
+                grid.Children.Add(BodyImage);
+            }
+            public static void AddDestroyedBoat(Grid grid)
+            {
+                foreach (Boat b in MainWindow.Enemy.boats)
+                {
+                    if (b.destroyed == true && b.painted == false)
+                    {
+                        TransformedBitmap transformBmp = new TransformedBitmap();
+                        Image boatImage = new Image();
+                        boatImage.Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\" + $"{b.boatName}" + ".png"));
+                        if (b.currentOrientation == "Vertical")
+                        {
+                            if (boatImage != null)
+                            {
+                                boatImage.Height = 153;
+                                boatImage.Height /= 3;
+                                boatImage.Height *= b.size;
+                            }
+                            Grid.SetRowSpan(boatImage, b.size);
+                            Grid.SetColumnSpan(boatImage, 1);
+                        }
+                        else if (b.currentOrientation == "Horizontal")
+                        {
+                            if (boatImage != null)
+                            {
+                                boatImage.Width = 153;
+                                boatImage.Width /= 3;
+                                boatImage.Width *= b.size;
+                            }
+                            Grid.SetColumnSpan(boatImage, b.size);
+                            Grid.SetRowSpan(boatImage, 1);
+                            transformBmp.BeginInit();
+                            transformBmp.Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\" + $"{b.boatName}" + ".png"));
+                            RotateTransform transform = new RotateTransform(90);
+                            transformBmp.Transform = transform;
+                            transformBmp.EndInit();
+                            boatImage.Source = transformBmp;
+                        }
+                        Grid.SetColumn(boatImage, b.column_number);
+                        Grid.SetRow(boatImage, b.row_number);
+                        grid.Children.Add(boatImage);
+                        b.painted = true;
+                        foreach (BoatParts p in b.parts)
+                        {
+                            AddFire(p.rowPos, p.colPos, grid);
+                        }
+                    }
+                }
+            }
+            public static void WinnerImage(Canvas canvas, string path)
+            {
+                BitmapImage bmpImage = new BitmapImage();
+                bmpImage.BeginInit();
+                bmpImage.UriSource = new Uri(MainWindow.projectDirectory + $"\\Images\\" + path, UriKind.RelativeOrAbsolute);
+                bmpImage.EndInit();
+                Image BodyImage = new Image
+                {
+                    Width = 150,
+                    Height = 150,
+                    Source = bmpImage
+                };
+                BodyImage.Stretch = Stretch.Fill;
+                canvas.Children.Add(BodyImage);
+            }
+            public static void AI_Randomize()
+            {
+                int i = 0;
+                foreach (Boat testboat in MainWindow.Enemy.boats.ToList())
+                {
+                    MainWindow.Enemy.boats[i] = Boat.Randomize_Boat(MainWindow.Enemy.boats[i]);
+                    Boat.SetBoatPartPositions(MainWindow.Enemy.boats[i]);
+                    while (Boat.CheckOverlappingBoats(MainWindow.Enemy.boats[i],MainWindow.Enemy) == true)
+                    {
+                        MainWindow.Enemy.boats[i] = Boat.Randomize_Boat(MainWindow.Enemy.boats[i]);
+                        Boat.SetBoatPartPositions(MainWindow.Enemy.boats[i]);
+                    }
+                    i += 1;
+                }
+            }
+            public static void CreateResultImage(Canvas canvas)
+            {
+                var brush = new ImageBrush();
+                brush.Stretch = Stretch.Fill;
+                //0 = vinst, 1 = förlust
+                if (MainWindow.match.winner == 0)
+                {
+                    //FIX: Ändra till riktiga bilder.
+                    brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\titlescreenpicture.jpeg"));
+                    canvas.Background = brush;
+                }
+                else if (MainWindow.match.winner == 1)
+                {
+                    brush.ImageSource = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\titlescreenpicture.jpeg"));
+                    canvas.Background = brush;
+                }
+            }
+
+
         }
 
         public class Player
@@ -143,7 +266,33 @@ namespace Battleships_WPF
                 }
                 return count;
             }
-
+            public static void AIattacks(Grid grid)
+            {
+                while (MainWindow.match.turnid == 1)
+                {
+                    Random AIRandomRow = new Random();
+                    int targetRow = AIRandomRow.Next(9);
+                    Random AIRandomCol = new Random();
+                    int targetCol = AIRandomCol.Next(9);
+                    while (MainWindow.checkCoordinates(new Coordinates(targetRow, targetCol), MainWindow.TakenCoordinates))
+                    {
+                        Random newRow = new Random();
+                        targetRow = newRow.Next(9);
+                        Random newCol = new Random();
+                        targetCol = newCol.Next(9);
+                    }
+                    MainWindow.TakenCoordinates.Add(new Coordinates(targetRow, targetCol));
+                    if (Attack(MainWindow.MainPlayer, targetRow, targetCol) == true)
+                    {
+                        Match.AddFire(targetRow, targetCol, grid);
+                    }
+                    else
+                    {
+                        Match.AddMiss(targetCol, targetRow, grid);
+                        MainWindow.match.turnid = 0;
+                    }
+                }
+            }
         }
 
         public class Boat
@@ -212,6 +361,100 @@ namespace Battleships_WPF
                 column_number = newColumnValue;
             }
 
+            public static BoatTemplate GetBoatTemplate(string boatName)
+            {
+                BoatTemplate boatTemplate = new BoatTemplate();
+
+                foreach (var template in MainWindow.boatTemplates)
+                {
+                    if (template.boatName == boatName)
+                    {
+                        boatTemplate = template;
+                    }
+                }
+
+                return boatTemplate;
+            }
+
+            public static Boat addBoatParts(Boat boat)
+            {
+                for (int i = 0; i < boat.BoatSize; i++)
+                {
+                    boat.parts.Add(new BoatParts(0, 0));
+                }
+                return boat;
+            }
+            public static Boat SetBoatPartPositions(Boat boat)
+            {
+                int originalRow = boat.row_number;
+                int originalCol = boat.column_number;
+                foreach (BoatParts boatPart in boat.parts)
+                {
+                    if (boat.currentOrientation == "Horizontal")
+                    {
+                        boatPart.rowPos = originalRow;
+                        boatPart.colPos = originalCol;
+                        originalCol += 1;
+                    }
+                    else if (boat.currentOrientation == "Vertical")
+                    {
+                        boatPart.rowPos = originalRow;
+                        boatPart.colPos = originalCol;
+                        originalRow += 1;
+                    }
+                }
+
+                return boat;
+            }
+            public static Boat Randomize_Boat(Boat boat)
+            {
+                //Horizontal genererar från vänster till höger, vertical uppifrån och ner
+                string[] orientations = new string[] { "Horizontal", "Vertical" };
+                Random randomRow = new Random();
+                int row = randomRow.Next(9);
+                Random randomCol = new Random();
+                int col = randomCol.Next(9);
+                Random Ori = new Random();
+                int index = Ori.Next(orientations.Length);
+                boat.currentOrientation = orientations[index];
+                CheckBorders(boat, ref row, ref col);
+                boat.row_number = row;
+                boat.column_number = col;
+                return boat;
+            }
+
+            public static void CheckBorders(Boat boat, ref int row, ref int col)
+            {
+                if (col + boat.size >= 9 && boat.currentOrientation == "Horizontal")
+                {
+                    col = 9 - boat.size;
+                }
+                if (row + boat.size >= 9 && boat.currentOrientation == "Vertical")
+                {
+                    row = 9 - boat.size;
+                }
+            }
+
+            public static bool CheckOverlappingBoats(Boat boat,Player player)
+            {
+                foreach (BoatParts part in boat.parts)
+                {
+                    foreach (Boat b in player.boats)
+                    {
+                        if (boat.boatName != b.boatName)
+                        {
+                            foreach (BoatParts p in b.parts)
+                            {
+                                if (p.rowPos == part.rowPos && p.colPos == part.colPos)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
         }
 
         public class BoatParts
@@ -329,7 +572,7 @@ namespace Battleships_WPF
 
                 canvas.Children.Add(BodyImage);
 
-                Boat newBoat = new Boat(MainWindow.Instance.GetBoatTemplate(boatName));
+                Boat newBoat = new Boat(Boat.GetBoatTemplate(boatName));
 
                 //FIXME: Depending on the name, get the id from a boat library
 
@@ -338,7 +581,6 @@ namespace Battleships_WPF
                 if (newBoat.currentRotationAngle == 0 || newBoat.currentRotationAngle == 180)
                 {
                     newBoat.currentOrientation = "Vertical";
-                    //Canvas.SetLeft(BodyImage, 80);
                 }
                 else if (newBoat.currentRotationAngle == 90 || newBoat.currentRotationAngle == 270)
                 {
@@ -352,7 +594,6 @@ namespace Battleships_WPF
 
                 MainWindow.Instance.currentPreviewBoat = newBoat;
             }
-
             public void RemoveBoatImage(Canvas canvas)
             {
                 if(canvas.Children.Count > 0)
@@ -418,6 +659,73 @@ namespace Battleships_WPF
                     CreateBoatImage(ImageCanvas, boatName: MainWindow.boatLibrary[Classes.PreviewWindow.currentBoatVisualIndex]);
                 }
             }
+
+            public static void PopulateTemplates()
+            {
+                for (int i = 0; i < MainWindow.boatLibrary.Length; i++)
+                {
+                    BoatTemplate boatTemplate = new BoatTemplate() { boatName = MainWindow.boatLibrary[i] };
+
+                    if (boatTemplate.boatName == "HugeBoat")
+                    {
+                        boatTemplate.boatSize = 4;
+                    }
+                    else if (boatTemplate.boatName == "BigBoat")
+                    {
+                        boatTemplate.boatSize = 3;
+                    }
+                    else if (boatTemplate.boatName == "MediumBoat1")
+                    {
+                        boatTemplate.boatSize = 2;
+                    }
+                    else if (boatTemplate.boatName == "MediumBoat2")
+                    {
+                        boatTemplate.boatSize = 2;
+                    }
+                    else if (boatTemplate.boatName == "LittleBoat")
+                    {
+                        boatTemplate.boatSize = 1;
+                    }
+
+                    TransformedBitmap transformBmp = new TransformedBitmap();
+                    BitmapImage bmpImage = new BitmapImage();
+
+                    bmpImage.BeginInit();
+
+                    string boatName = MainWindow.boatLibrary[i];
+
+                    bmpImage.UriSource = new Uri(MainWindow.projectDirectory + $"\\Images\\Boats\\{boatName}.png", UriKind.RelativeOrAbsolute);
+
+                    bmpImage.EndInit();
+
+                    transformBmp.BeginInit();
+
+                    transformBmp.Source = bmpImage;
+
+                    RotateTransform transform = new RotateTransform(0);
+
+                    transformBmp.Transform = transform;
+
+                    transformBmp.EndInit();
+
+                    Image BodyImage = new Image
+                    {
+                        Width = 51,
+                        Height = 153,
+                        Name = boatName,
+                        Source = transformBmp
+                        //new BitmapImage(new Uri(projectDirectory+"\\Images\\BigBoat\\BigBoat.png", UriKind.Absolute)), 
+                        //transformBmp
+                    };
+
+                    boatTemplate.boatImage = BodyImage;
+                    MainWindow.MainPlayer.boats.Add(Boat.addBoatParts(new Classes.Boat(boatTemplate)));
+                    MainWindow.Enemy.boats.Add(Boat.addBoatParts(new Classes.Boat(boatTemplate)));
+                    MainWindow.boatTemplates.Add(boatTemplate);
+                }
+            }
+
+
         }
 
         public class Coordinates
@@ -429,7 +737,6 @@ namespace Battleships_WPF
                 this.col = col;
             }
         }
-
         public static bool Attack(Player player,int row,int col)
         {
             foreach(Boat b in player.boats)
@@ -452,10 +759,6 @@ namespace Battleships_WPF
                     }
                 }
             }
-            return false;
-        }
-        public bool AIattack()
-        {
             return false;
         }
     }

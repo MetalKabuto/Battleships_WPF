@@ -6,9 +6,32 @@
         xmlns:local="clr-namespace:Battleships_WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="550" Width="1110">
+    <Window.Resources>
+        <Style x:Key="MyButton" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid Name="MainGrid">
-        <Canvas Background="Transparent" Name="TitleCanvas" Height="200" Width="200" VerticalAlignment="Top" HorizontalAlignment="Left"></Canvas>
-        <Button Name="TitleButton" Click="TitleButton_Click" HorizontalAlignment="Center" VerticalAlignment="Top" Width="80" Height="55" Margin="0,224,0,0" />
+        <Canvas Background="Transparent" Name="TitleCanvas" Height="550" Width="1100" VerticalAlignment="Top" HorizontalAlignment="Left"></Canvas>
+        <Button BorderBrush="Transparent" Name="TitleButton" Click="TitleButton_Click" HorizontalAlignment="Center" VerticalAlignment="Top" Width="150" Height="80" Margin="0,224,0,0" Style="{StaticResource MyButton}"/>
+        <TextBox BorderThickness="0" TextWrapping="Wrap" TextAlignment="Center" Name="TitleText" Background="Transparent" BorderBrush="Transparent" Margin="0,150,0,0" VerticalAlignment="Top" Height="80" Width="400" SelectionTextBrush="Red" FontSize="20" Focusable="False" FontStyle="Oblique" FontWeight="Black" IsReadOnly="True">
+            Welcome to Battleships
+        </TextBox>
         <!--Hittat fontweight https://learn.microsoft.com/en-us/dotnet/api/system.windows.fontweights?view=windowsdesktop-7.0 -->
         <!-- foreground här https://wpf-tutorial.com/ms/6/xaml/basic-xaml/ -->
         <Border Name="Border4" Background="Black" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Width="450" Height="50"  BorderBrush="Black" BorderThickness="6" Visibility="Hidden">
@@ -102,8 +125,10 @@
                 <Canvas Background="LightGray" Name="ImageCanvas" Height="290" Width="190" VerticalAlignment="Top" HorizontalAlignment="Right" AllowDrop="True" Drop="ImageDrop" Margin="15,80,10,0" DragLeave="Drag_Leave"></Canvas>
             </Grid>
         </Border>
-        <Canvas Name="ResultCanvas" Height="500" Width="500" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed"></Canvas>
+        <Canvas Name="ResultCanvas" Height="550" Width="1100" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed"></Canvas>
         <!--Satte den längst ner så att den hamnar 'ovanpå' de andra grejerna. -->
-        <Button Name="RestartButton" Click="RestartButton_Click" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80" Visibility="Collapsed"/>
+        <Button BorderBrush="Transparent" Name="RestartButton" Click="RestartButton_Click" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="80" Width="150" Visibility="Collapsed" Style="{StaticResource MyButton}"/>
+        <Canvas Name="Winner" Width="150" Height="150" Background="Transparent" Margin="0,50,0,0" VerticalAlignment="Top" Focusable="False" Visibility="Collapsed">
+        </Canvas>
     </Grid>
 </Window>
