@@ -7,6 +7,7 @@ using System.Media;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -552,7 +553,6 @@ namespace Battleships_WPF
         }
         private void AIattacks()
         {
-            
             while (match.turnid == 1)
             {
                 Random AIRandomRow = new Random();
