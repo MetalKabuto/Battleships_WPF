@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -20,6 +21,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using static Battleships_WPF.Classes;
+using System.Windows.Media;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace Battleships_WPF
 {
@@ -31,6 +35,8 @@ namespace Battleships_WPF
         public Player MainPlayer = new Classes.Player(0, 3);
         public Player Enemy = new Classes.Player(1, 3);
         public Match match;
+
+        private MediaPlayer mediaPlayer;
 
         public static MainWindow Instance { get; private set; }
 
@@ -66,6 +72,20 @@ namespace Battleships_WPF
             currentMatch.CreateTitleImage(TitleCanvas);
             //AI placerar skepp när man startar programmet
             AI_Randomize();
+        }
+
+        public void PlaySound(string filename, int volume)
+        {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.Volume = volume / 100.0f;
+            mediaPlayer.Open(new Uri(filename));
+            mediaPlayer.Play();
+        }
+
+        public void SetVolume(int volume)
+        {
+            // MediaPlayer volume is a float value between 0 and 1.
+            mediaPlayer.Volume = volume / 100.0f;
         }
 
         public Boat Randomize_Boat(Boat boat)
@@ -210,6 +230,14 @@ namespace Battleships_WPF
             
             return boat;
         }
+        private void RestartProgram()
+        {
+            //taget från http://csharp.tips/tip/article/962-how-to-restart-program-in-csharp
+            //OBS: Pathen kanske inte funkar om man kör programmet utanför debugging?
+            string ProgramPath = $"{projectDirectory}\\bin\\Debug\\net6.0-windows\\Battleships WPF.EXE"; 
+            Process.Start(ProgramPath);
+            Environment.Exit(0);
+        }
         private void TitleButton_Click(object sender, RoutedEventArgs e)
         {
             //Gömmer huvudmenyn när man klickar på 'Begin Game'
@@ -225,6 +253,10 @@ namespace Battleships_WPF
             Border5.Visibility = Visibility.Visible;
             P1TextBlock.Visibility = Visibility.Visible;
             P2TextBlock.Visibility = Visibility.Visible;
+        }
+        private void RestartButton_Click(object sender, RoutedEventArgs e)
+        {
+            RestartProgram();
         }
         void LoadImages()
         {
@@ -614,6 +646,7 @@ namespace Battleships_WPF
                         {
                             AddFire(r, c);
                             ButtonX.Text = $"Boat Hit in position row: {r} col: {c}";
+                            PlaySound(projectDirectory + "\\Sounds\\hitsound1.wav", 3);
                         }
                         //Lade till så att det visas en ikon på rutor man gissat på, men som inte har skepp.
                         else
@@ -631,6 +664,7 @@ namespace Battleships_WPF
                             Grid.SetRow(BodyImage, r);
                             watertiles2.Children.Add(BodyImage);
                             ButtonX.Text = $"No ship at the position: row {r} col: {c}";
+                            PlaySound(projectDirectory + "\\Sounds\\watersplash.wav", 15);
                             match.turnid = 1;
                         }
                         if (match.turnid == 1)
@@ -640,16 +674,18 @@ namespace Battleships_WPF
                     }
                 }
             }
-
+            //Lade till så att restartknappen visas när matchen är över
             if (MainPlayer.PlayerBoats == 0)
             {
                 match.winner = 1;
                 ButtonX.Text = "Enemy Won!!";
+                RestartButton.Visibility = Visibility.Visible;
             }
             else if (Enemy.PlayerBoats == 0)
             {
                 match.winner = 0;
                 ButtonX.Text = "You won!!!";
+                RestartButton.Visibility = Visibility.Visible;
             }
         }
 

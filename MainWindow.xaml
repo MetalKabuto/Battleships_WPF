@@ -100,5 +100,7 @@
                 <Canvas Background="LightGray" Name="ImageCanvas" Height="290" Width="190" VerticalAlignment="Top" HorizontalAlignment="Right" AllowDrop="True" Drop="ImageDrop" Margin="15,80,10,0" DragLeave="Drag_Leave"></Canvas>
             </Grid>
         </Border>
+        <!--Satte den längst ner så att den hamnar 'ovanpå' de andra grejerna. -->
+        <Button Name="RestartButton" Click="RestartButton_Click" Content="Restart Game" HorizontalAlignment="Center" Margin="0,224,0,0" VerticalAlignment="Top" Height="55" Width="80" Visibility="Collapsed"/>
     </Grid>
 </Window>
