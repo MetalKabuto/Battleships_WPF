@@ -240,6 +240,17 @@ namespace Battleships_WPF
                     canvas.Background = brush;
                 }
             }
+            public static bool checkCoordinates(Coordinates cord, List<Coordinates> TakenCoordinates)
+            {
+                foreach (Coordinates c in TakenCoordinates)
+                {
+                    if (c.row == cord.row && c.col == cord.col)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
 
 
         }
@@ -274,7 +285,7 @@ namespace Battleships_WPF
                     int targetRow = AIRandomRow.Next(9);
                     Random AIRandomCol = new Random();
                     int targetCol = AIRandomCol.Next(9);
-                    while (MainWindow.checkCoordinates(new Coordinates(targetRow, targetCol), MainWindow.TakenCoordinates))
+                    while (Match.checkCoordinates(new Coordinates(targetRow, targetCol), MainWindow.TakenCoordinates))
                     {
                         Random newRow = new Random();
                         targetRow = newRow.Next(9);

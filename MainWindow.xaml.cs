@@ -38,8 +38,8 @@ namespace Battleships_WPF
         static bool matchStart = false;
         
         //Sound 
-        private MediaPlayer mediaPlayer;
-        private double masterVolume;
+        public static MediaPlayer mediaPlayer;
+        public static double masterVolume;
 
         //Controls
         public static MainWindow Instance { get; private set; }
@@ -80,7 +80,7 @@ namespace Battleships_WPF
             //AI placerar skepp när man startar programmet
             Match.AI_Randomize();
         }
-        public void PlaySound(string filename, int volume)
+        public static void PlaySound(string filename, int volume)
         {
             mediaPlayer = new MediaPlayer();
             mediaPlayer.Volume = (volume / 100.0f) * masterVolume;
@@ -274,17 +274,6 @@ namespace Battleships_WPF
                 ButtonX.Text = "Cant place boats outside player bounds";
             }
         }
-        public static bool checkCoordinates(Coordinates cord,List<Coordinates> TakenCoordinates)
-        {
-            foreach(Coordinates c in TakenCoordinates)
-            {
-                if(c.row == cord.row && c.col == cord.col)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
         public void button_Click(object sender, RoutedEventArgs e)
         {
             Button srcButton = e.Source as Button;
@@ -294,37 +283,7 @@ namespace Battleships_WPF
                 //Tror man kan ta bort turnid
                 if (match.turnid == 0)
                 {
-
-                    var Pos = (Button)e.Source;
-                    int c = Grid.GetColumn(Pos);
-                    int r = Grid.GetRow(Pos);
-                    ButtonX.Text = $"row: {r} col: {c}";
-                    if (checkCoordinates(new Coordinates(r, c),PlayerTakenCoordinates))
-                    {
-                        ButtonX.Text = "Already attacked this location!";
-                    }
-                    else
-                    {
-                        PlayerTakenCoordinates.Add(new Coordinates(r, c));
-                        if (Attack(Enemy, r, c) == true)
-                        {
-                            Match.AddFire(r, c,watertiles2);
-                            ButtonX.Text = $"Boat Hit in position row: {r} col: {c}";
-                            PlaySound(projectDirectory + "\\Sounds\\hitsound1.wav", 3);
-                        }
-                        //Lade till så att det visas en ikon på rutor man gissat på, men som inte har skepp.
-                        else
-                        {
-                            Match.AddMiss(c, r,watertiles2);
-                            ButtonX.Text = $"No ship at the position: row {r} col: {c}";
-                            PlaySound(projectDirectory + "\\Sounds\\watersplash.wav", 15);
-                            match.turnid = 1;
-                        }
-                        if (match.turnid == 1)
-                        {
-                            Player.AIattacks(watertiles);
-                        }
-                    }
+                    DelayAttack(e,watertiles,watertiles2,ButtonX, MousePositionText);
                 }
             }
             //Lade till så att restartknappen visas när matchen är över
@@ -340,6 +299,44 @@ namespace Battleships_WPF
                 EndScreen();
             }
         }
+
+        async static void DelayAttack(RoutedEventArgs e,Grid grid,Grid grid2, TextBox box,TextBox box2)
+        {
+            var Pos = (Button)e.Source;
+            int c = Grid.GetColumn(Pos);
+            int r = Grid.GetRow(Pos);
+            box.Text = $"row: {r} col: {c}";
+            if (Match.checkCoordinates(new Coordinates(r, c), PlayerTakenCoordinates))
+            {
+                box.Text = "Already attacked this location!";
+            }
+            else
+            {
+                PlayerTakenCoordinates.Add(new Coordinates(r, c));
+                if (Attack(Enemy, r, c) == true)
+                {
+                    Match.AddFire(r, c, grid2);
+                    box.Text = $"Boat Hit in position row: {r} col: {c}";
+                    PlaySound(projectDirectory + "\\Sounds\\hitsound1.wav", 3);
+                }
+                //Lade till så att det visas en ikon på rutor man gissat på, men som inte har skepp.
+                else
+                {
+                    Match.AddMiss(c, r, grid2);
+                    box.Text = $"No ship at the position: row {r} col: {c}";
+                    PlaySound(projectDirectory + "\\Sounds\\watersplash.wav", 15);
+                    match.turnid = 1;
+                }
+                box2.Text = "Enemy Turn";
+                await Task.Delay(2000);
+                if (match.turnid == 1)
+                {
+                    Player.AIattacks(grid);
+                    box2.Text = "Your Turn";
+                }
+            }
+        }
+
         public void EndScreen()
         {
                 currentMatch.CreateButtonImage(RestartButton);
