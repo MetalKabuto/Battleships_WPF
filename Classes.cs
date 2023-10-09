@@ -241,8 +241,9 @@ namespace Battleships_WPF
                 }
             }
 
-            public void CreateBoatImage(Canvas canvas, int rotationValue = 0, string boatName = "BigBoat")
+            public void CreateBoatImage(Canvas canvas, int rotationValue = 0, string boatName = "HugeBoat")
             {
+                //boatName = MainWindow.Instance.currentPreviewBoat.boatName;
                 TransformedBitmap transformBmp = new TransformedBitmap();
                 BitmapImage bmpImage = new BitmapImage();
 
