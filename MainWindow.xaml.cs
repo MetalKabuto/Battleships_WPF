@@ -38,7 +38,7 @@ namespace Battleships_WPF
         public static List<Coordinates> PlayerTakenCoordinates = new List<Coordinates>();
         public static List<Coordinates> TakenCoordinates= new List<Coordinates>();
         public static List<Image> Images = new List<Image>();
-        public static string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
+        public static string[] boatLibrary = new string[] { "HugeBoat", "BigBoat", "MediumBoat1", "MediumBoat2", "LittleBoat" };
         public static List<BoatTemplate> boatTemplates = new List<Classes.BoatTemplate>();
 
         //Preview Window variables
@@ -54,7 +54,7 @@ namespace Battleships_WPF
             Instance = this;
             PopulateBoatTemplates();
 
-            currentPreviewBoat = new Classes.Boat("BigBoat", 3);
+            currentPreviewBoat = new Classes.Boat(boatTemplates[0].boatName, boatTemplates[0].boatSize);
 
             LoadImages();   //Fill Images list with images, of the elements in Boat Library
 
@@ -85,7 +85,11 @@ namespace Battleships_WPF
             if (col == 8 && newboat.currentOrientation == "Horizontal")
             {
                 //Vart får den BoatSize ifrån?
-                if (newboat.BoatSize == 3)
+                if (newboat.BoatSize == 4)
+                {
+                    currentcol -= 3;
+                }
+                else if (newboat.BoatSize == 3)
                 {
                     currentcol -= 2;
                 }
@@ -94,13 +98,25 @@ namespace Battleships_WPF
                     currentcol -= 1;
                 }
             }
+            else if(col == 7 && newboat.BoatSize == 4 && newboat.currentOrientation == "Horizontal")
+            {
+                currentcol -= 2;
+            }
+            else if (col == 6 && newboat.BoatSize == 4 && newboat.currentOrientation == "Horizontal")
+            {
+                currentcol -= 1;
+            }
             else if (col == 7 && newboat.BoatSize == 3 && newboat.currentOrientation == "Horizontal")
             {
                 currentcol -= 1;
             }
             if (row == 8 && newboat.currentOrientation == "Vertical")
             {
-                if (newboat.BoatSize == 3)
+                if (newboat.BoatSize == 4)
+                {
+                    currentrow -= 3;
+                }
+                else if (newboat.BoatSize == 3)
                 {
                     currentrow -= 2;
                 }
@@ -108,6 +124,14 @@ namespace Battleships_WPF
                 {
                     currentrow -= 1;
                 }
+            }
+            else if (row == 7 && newboat.BoatSize == 4 && newboat.currentOrientation == "Vertical")
+            {
+                currentrow -= 2;
+            }
+            else if (row == 6 && newboat.BoatSize == 4 && newboat.currentOrientation == "Vertical")
+            {
+                currentrow -= 1;
             }
             else if (row == 7 && newboat.BoatSize == 3 && newboat.currentOrientation == "Vertical")
             {
@@ -254,11 +278,19 @@ namespace Battleships_WPF
             {
                 Classes.BoatTemplate boatTemplate = new Classes.BoatTemplate() { boatName = boatLibrary[i] };
 
-                if(boatTemplate.boatName == "BigBoat")
+                if(boatTemplate.boatName == "HugeBoat")
+                {
+                    boatTemplate.boatSize = 4;
+                }
+                else if (boatTemplate.boatName == "BigBoat")
                 {
                     boatTemplate.boatSize = 3;
                 }
-                else if (boatTemplate.boatName == "MediumBoat")
+                else if (boatTemplate.boatName == "MediumBoat1")
+                {
+                    boatTemplate.boatSize = 2;
+                }
+                else if (boatTemplate.boatName == "MediumBoat2")
                 {
                     boatTemplate.boatSize = 2;
                 }
@@ -639,12 +671,12 @@ namespace Battleships_WPF
             int BoatChecker = 0;
             foreach(UIElement element in watertiles.Children)
             {
-                if(element.Uid == "BigBoat" | element.Uid == "MediumBoat"| element.Uid == "LittleBoat")
+                if(element.Uid == "HugeBoat" | element.Uid == "BigBoat" | element.Uid == "MediumBoat1"| element.Uid == "MediumBoat2" | element.Uid == "LittleBoat")
                 {
                     BoatChecker += 1;
                 }
             }
-            if(BoatChecker != 3)
+            if(BoatChecker != 5)
             {
                 matchStart =false;
                 MousePositionText.Text = $"Place all your boats!\n You only have placed {BoatChecker} boats";
