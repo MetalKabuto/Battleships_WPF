@@ -21,6 +21,8 @@ using System.Windows.Shapes;
 using System.Xml.Linq;
 using static Battleships_WPF.Classes;
 using System.Windows.Media;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace Battleships_WPF
 {
@@ -227,6 +229,14 @@ namespace Battleships_WPF
             
             return boat;
         }
+        private void RestartProgram()
+        {
+            //taget från http://csharp.tips/tip/article/962-how-to-restart-program-in-csharp
+            //OBS: Pathen kanske inte funkar om man kör programmet utanför debugging?
+            string ProgramPath = $"{projectDirectory}\\bin\\Debug\\net6.0-windows\\Battleships WPF.EXE"; 
+            Process.Start(ProgramPath);
+            Environment.Exit(0);
+        }
         private void TitleButton_Click(object sender, RoutedEventArgs e)
         {
             //Gömmer huvudmenyn när man klickar på 'Begin Game'
@@ -242,6 +252,10 @@ namespace Battleships_WPF
             Border5.Visibility = Visibility.Visible;
             P1TextBlock.Visibility = Visibility.Visible;
             P2TextBlock.Visibility = Visibility.Visible;
+        }
+        private void RestartButton_Click(object sender, RoutedEventArgs e)
+        {
+            RestartProgram();
         }
         void LoadImages()
         {
@@ -660,15 +674,18 @@ namespace Battleships_WPF
                     }
                 }
             }
+            //Lade till så att restartknappen visas när matchen är över
             if (MainPlayer.PlayerBoats == 0)
             {
                 match.winner = 1;
                 ButtonX.Text = "Enemy Won!!";
+                RestartButton.Visibility = Visibility.Visible;
             }
             else if (Enemy.PlayerBoats == 0)
             {
                 match.winner = 0;
                 ButtonX.Text = "You won!!!";
+                RestartButton.Visibility = Visibility.Visible;
             }
         }
 
