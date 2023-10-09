@@ -35,6 +35,7 @@ namespace Battleships_WPF
 
         public static string MouseHover;
 
+        public static List<Coordinates> PlayerTakenCoordinates = new List<Coordinates>();
         public static List<Coordinates> TakenCoordinates= new List<Coordinates>();
         public static List<Image> Images = new List<Image>();
         public static string[] boatLibrary = new string[] { "BigBoat", "MediumBoat", "LittleBoat" };
@@ -430,7 +431,7 @@ namespace Battleships_WPF
             Canvas.SetTop(ImageCanvas.Children[0], dropposition.Y - 50);
         }
 
-        private bool checkCoordinates(Coordinates cord)
+        private bool checkCoordinates(Coordinates cord,List<Coordinates> TakenCoordinates)
         {
             foreach(Coordinates c in TakenCoordinates)
             {
@@ -499,7 +500,7 @@ namespace Battleships_WPF
                 int targetRow = AIRandomRow.Next(9);
                 Random AIRandomCol = new Random();
                 int targetCol = AIRandomCol.Next(9);
-                while(checkCoordinates(new Coordinates(targetRow, targetCol)))
+                while(checkCoordinates(new Coordinates(targetRow, targetCol),TakenCoordinates))
                 {
                     Random newRow = new Random();
                     targetRow = newRow.Next(9);
@@ -563,39 +564,48 @@ namespace Battleships_WPF
             if (matchStart == true && match.winner != 0 && match.winner != 1)
             {
                 //Tror man kan ta bort turnid
-                if(match.turnid == 0)
+                if (match.turnid == 0)
                 {
+
                     var Pos = (Button)e.Source;
                     int c = Grid.GetColumn(Pos);
                     int r = Grid.GetRow(Pos);
                     ButtonX.Text = $"row: {r} col: {c}";
-                    if (Attack(Enemy, r, c) == true)
+                    if (checkCoordinates(new Coordinates(r, c),PlayerTakenCoordinates))
                     {
-                        AddFire(r, c);
-                        ButtonX.Text = $"Boat Hit in position row: {r} col: {c}";
+                        ButtonX.Text = "already guessed at this locaiton";
                     }
-                    //Lade till så att det visas en ikon på rutor man gissat på, men som inte har skepp.
                     else
                     {
-                        Image BodyImage = new Image
+                        PlayerTakenCoordinates.Add(new Coordinates(r, c));
+                        if (Attack(Enemy, r, c) == true)
                         {
-                            Width = 31,
-                            Height = 31,
-                            Name = "miss",
-                            Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Cross.png", UriKind.RelativeOrAbsolute)),
-                            Stretch = Stretch.Fill
-                        };
-                        BodyImage.Uid = "miss" + r + c;
-                        Grid.SetColumn(BodyImage, c);
-                        Grid.SetRow(BodyImage, r);
-                        watertiles2.Children.Add(BodyImage);
-                        ButtonX.Text = $"No ship at the position: row {r} col: {c}";
-                        match.turnid = 1;
-                    }
-                    if (match.turnid == 1)
-                        {
-                        AIattacks();
+                            AddFire(r, c);
+                            ButtonX.Text = $"Boat Hit in position row: {r} col: {c}";
                         }
+                        //Lade till så att det visas en ikon på rutor man gissat på, men som inte har skepp.
+                        else
+                        {
+                            Image BodyImage = new Image
+                            {
+                                Width = 31,
+                                Height = 31,
+                                Name = "miss",
+                                Source = new BitmapImage(new Uri(MainWindow.projectDirectory + "\\Images\\Boats\\Cross.png", UriKind.RelativeOrAbsolute)),
+                                Stretch = Stretch.Fill
+                            };
+                            BodyImage.Uid = "miss" + r + c;
+                            Grid.SetColumn(BodyImage, c);
+                            Grid.SetRow(BodyImage, r);
+                            watertiles2.Children.Add(BodyImage);
+                            ButtonX.Text = $"No ship at the position: row {r} col: {c}";
+                            match.turnid = 1;
+                        }
+                        if (match.turnid == 1)
+                        {
+                            AIattacks();
+                        }
+                    }
                 }
             }
             if (MainPlayer.PlayerBoats == 0)
